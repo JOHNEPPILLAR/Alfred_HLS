@@ -1,0 +1,29 @@
+{
+  "name": "alfred_hls",
+  "version": "1.0.0",
+  "description": "Pillar home Digital Assistant media streamer",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "JP",
+  "license": "ISC",
+  "dependencies": {
+    "dateformat": "*",
+    "dotenv": "*",
+    "winston": "*",
+    "https": "*",
+    "fluent-ffmpeg": "*",
+    "fs": "*",
+    "http": "*",
+    "url": "*",
+    "path": "*",
+    "zlib": "*",
+    "http-attach": "*"
+  },
+  "devDependencies": {
+    "eslint": "*",
+    "eslint-config-airbnb-base": "*",
+    "eslint-plugin-import": "*"
+  }
+}

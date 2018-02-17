@@ -1,0 +1,8 @@
+.vscode
+.envrc
+node_modules
+run.sh
+streams
+certs
+.env
+Alfred_hls.log
