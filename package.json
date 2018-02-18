@@ -19,8 +19,7 @@
     "url": "*",
     "path": "*",
     "zlib": "*",
-    "http-attach": "*",
-    "ssl-root-cas": "*"
+    "http-attach": "*"
   },
   "devDependencies": {
     "eslint": "^4.18.0",
