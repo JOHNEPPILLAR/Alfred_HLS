@@ -19,7 +19,9 @@
     "url": "*",
     "path": "*",
     "zlib": "*",
-    "http-attach": "*"
+    "http-attach": "*",
+    "memwatch-next": "*",
+    "heapdump": "*"
   },
   "devDependencies": {
     "eslint": "^4.18.0",
