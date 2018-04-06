@@ -6,3 +6,4 @@ streams
 certs
 .env
 Alfred_hls.log
+mem/*
