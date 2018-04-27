@@ -1,9 +1,6 @@
-.vscode
-.envrc
 node_modules
-run.sh
+package-lock.json
 streams
 certs
 .env
-Alfred_hls.log
-mem/*
+*.log
