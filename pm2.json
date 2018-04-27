@@ -1,5 +1,5 @@
 {
-    "name": "ALFRED - Digital Assistant Media Stream",
+    "name": "ALFRED - HLS Service",
     "script": "/home/nodejs/app/lib/server.js",
     "instances": "1",
     "env": {
