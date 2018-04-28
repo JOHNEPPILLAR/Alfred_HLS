@@ -12,18 +12,17 @@
     "dateformat": "*",
     "dotenv": "*",
     "winston": "*",
-    "https": "*",
     "fluent-ffmpeg": "*",
     "fs": "*",
-    "http": "*",
     "url": "*",
     "path": "*",
     "zlib": "*",
-    "http-attach": "*",
     "memwatch-next": "*",
     "pure-uuid": "*",
     "request": "*",
-    "request-promise": "*"
+    "request-promise": "*",
+    "restify": "*",
+    "restify-router": "*"
   },
   "devDependencies": {
     "eslint": "*",
