@@ -2,8 +2,6 @@ FROM node:latest
 
 USER root
 
-ENV FFMPEG_VERSION=3.2.10
-
 RUN ln -snf /usr/share/zoneinfo/Europe/London /etc/localtime && echo Europe/London > /etc/timezone \
 	&& apt-get -y update \
 	&& apt-get -y upgrade \
@@ -14,6 +12,8 @@ RUN ln -snf /usr/share/zoneinfo/Europe/London /etc/localtime && echo Europe/Lond
 	&& apt-get install -y ffmpeg \
 	&& npm install pm2 -g \
 	&& mkdir -p /home/nodejs/app 
+
+RUN FFMPEG_VERSION=$(ffmpeg -version)
 
 WORKDIR /home/nodejs/app
 
