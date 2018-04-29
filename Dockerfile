@@ -13,8 +13,6 @@ RUN ln -snf /usr/share/zoneinfo/Europe/London /etc/localtime && echo Europe/Lond
 	&& npm install pm2 -g \
 	&& mkdir -p /home/nodejs/app 
 
-RUN FFMPEG_VERSION=$(ffmpeg -version)
-
 WORKDIR /home/nodejs/app
 
 COPY package.json /home/nodejs/app
