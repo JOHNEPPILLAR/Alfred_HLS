@@ -31,9 +31,10 @@ function ping(req, res, next) {
   const ackJSON = {
     service: process.env.ServiceName,
     reply: 'pong',
-    memory: Math.round(process.memoryUsage().rss / 1024 / 1024),
-    heapTotal: Math.round(process.memoryUsage().heapTotal / 1024 / 1024),
-    heapUsed: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+    cpu: serviceHelper.getCpuInfo(),
+    mem: serviceHelper.getMemoryInfo(),
+    os: serviceHelper.getOsInfo(),
+    process: serviceHelper.getProcessInfo(),
   };
 
   serviceHelper.sendResponse(res, true, ackJSON); // Send response back to caller

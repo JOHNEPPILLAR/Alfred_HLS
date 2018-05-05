@@ -22,7 +22,8 @@
     "request-promise": "*",
     "restify": "*",
     "restify-router": "*",
-    "ip": "*"
+    "ip": "*",
+    "os": "*"
   },
   "devDependencies": {
     "eslint": "*",
