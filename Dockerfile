@@ -23,4 +23,4 @@ COPY . /home/nodejs/app
 
 CMD [ "pm2-runtime", "start", "/home/nodejs/app/pm2.json" ]
 
-EXPOSE 3993
+EXPOSE 3983
