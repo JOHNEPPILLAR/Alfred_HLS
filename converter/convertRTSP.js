@@ -5,6 +5,9 @@ const serviceHelper = require('../lib/helper.js');
 const ffmpeg = require('fluent-ffmpeg');
 const path = require('path');
 const fs = require('fs');
+const UUID = require('pure-uuid');
+
+global.instanceTraceID = new UUID(4); // Set new UUID
 
 const camNumber = process.argv[2];
 
@@ -62,7 +65,6 @@ function convertRTSPtoHLS() {
       }
 
       fs.readdir(directory, (dirErr, files) => {
-        serviceHelper.log('trace', `convertRTSPtoHLS - ${camTitle}`, 'Removing old files');
         if (dirErr) throw dirErr;
         files.forEach((file) => {
           fs.unlink(path.join(directory, file), (fileErr) => {
