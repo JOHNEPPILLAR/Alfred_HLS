@@ -56,7 +56,7 @@ function convertRTSPtoHLS() {
     const directory = `streams/${camNumber}`;
     fs.stat(directory, (err, stats) => {
       if (err) {
-        serviceHelper.log('error', `convertRTSPtoHLS - ${camTitle}`, 'Stream storeage folder does not exist, so creating folder');
+        serviceHelper.log('trace', `convertRTSPtoHLS - ${camTitle}`, 'Stream storeage folder does not exist, so creating folder');
         return fs.mkdir(directory);
       }
       if (!stats.isDirectory()) {
