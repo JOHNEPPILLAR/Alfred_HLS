@@ -74,7 +74,10 @@ async function createStream(req, res, next) {
   const urlPath = req.url.split('/');
   const fileName = path.basename(req.url);
   const fileExt = path.extname(req.url);
-  const filePath = `streams/${urlPath[2]}/${fileName}`;
+  let filePath = `streams/${urlPath[2]}/${fileName}`;
+
+  // Override filepath if in Mock mode
+  if (process.env.Mock === 'true') filePath = `mock/${fileName}`;
 
   // Check if stream is ready
   fs.exists(filePath, async (exists) => {
