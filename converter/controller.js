@@ -12,7 +12,7 @@ function convertStreams(camToProcess) {
 }
 
 if (process.env.Mock === 'true') {
-  serviceHelper.log('trace', 'convertStreams', 'Mock mode enabled');
+  serviceHelper.log('trace', 'convertStreams', 'Mock mode enabled - streaming static content');
 } else {
   convertStreams(1);
   convertStreams(2);

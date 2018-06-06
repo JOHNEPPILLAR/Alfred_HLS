@@ -72,7 +72,7 @@ async function createStream(req, res, next) {
 
   // Map path to files
   const urlPath = req.url.split('/');
-  const fileName = path.basename(req.url);
+  const fileName = path.basename(req.url).split('?')[0];
   const fileExt = path.extname(req.url);
   let filePath = `streams/${urlPath[2]}/${fileName}`;
 

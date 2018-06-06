@@ -5,5 +5,5 @@ dev.env
 localDevDocker.sh
 certs/
 *.log
-streams
-mock
+streams/
+mock/
