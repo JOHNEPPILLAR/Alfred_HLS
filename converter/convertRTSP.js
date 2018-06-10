@@ -54,16 +54,18 @@ function convertRTSPtoHLS() {
   try {
     // Clean up old stream files
     const directory = `streams/${camNumber}`;
-    fs.stat(directory, (err, stats) => {
+    fs.stat(directory, (err) => {
       if (err) {
         serviceHelper.log('trace', `convertRTSPtoHLS - ${camTitle}`, 'Stream storeage folder does not exist, so creating folder');
-        return fs.mkdir(directory);
+        fs.mkdir('streams', (dirErr) => {
+          if (dirErr) serviceHelper.log('error', `encodingError - ${camTitle}`, dirErr);
+          process.exit();
+        });
+        fs.mkdir(directory, (dirErr) => {
+          if (dirErr) serviceHelper.log('error', `encodingError - ${camTitle}`, dirErr);
+          process.exit();
+        });
       }
-      if (!stats.isDirectory()) {
-        serviceHelper.log('error', `convertRTSPtoHLS - ${camTitle}`, 'Stream storage folder is not a folder, exit program');
-        process.exit();
-      }
-
       fs.readdir(directory, (dirErr, files) => {
         if (dirErr) throw dirErr;
         files.forEach((file) => {
