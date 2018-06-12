@@ -58,15 +58,18 @@ function convertRTSPtoHLS() {
       if (err) {
         serviceHelper.log('trace', `convertRTSPtoHLS - ${camTitle}`, 'Stream storeage folder does not exist, so creating folder');
         fs.mkdir('streams', (dirErr) => {
-          if (dirErr) serviceHelper.log('error', `encodingError - ${camTitle}`, dirErr);
+          serviceHelper.log('trace', `convertRTSPtoHLS - ${camTitle}`, 'Creating streams folder');
+          if (dirErr) serviceHelper.log('error', `convertRTSPtoHLS - ${camTitle}`, dirErr);
           process.exit();
         });
         fs.mkdir(directory, (dirErr) => {
-          if (dirErr) serviceHelper.log('error', `encodingError - ${camTitle}`, dirErr);
+          serviceHelper.log('trace', `convertRTSPtoHLS - ${camTitle}`, 'Creating full streams folder');
+          if (dirErr) serviceHelper.log('error', `convertRTSPtoHLS - ${camTitle}`, dirErr);
           process.exit();
         });
       }
       fs.readdir(directory, (dirErr, files) => {
+        serviceHelper.log('trace', `convertRTSPtoHLS - ${camTitle}`, 'Deleting any old files');
         if (dirErr) throw dirErr;
         files.forEach((file) => {
           fs.unlink(path.join(directory, file), (fileErr) => {
@@ -75,6 +78,7 @@ function convertRTSPtoHLS() {
         });
 
         // Start converting
+        serviceHelper.log('trace', `convertRTSPtoHLS - ${camTitle}`, 'Start converting RTSP to HLS');
         ffmpeg(camURL, { timeout: 432000 }).addOptions([
           // '-c:v libx264',
           // '-c:a aac',
