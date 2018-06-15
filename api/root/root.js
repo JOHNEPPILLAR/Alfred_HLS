@@ -3,6 +3,7 @@
  */
 const Skills = require('restify-router').Router;
 const serviceHelper = require('../../lib/helper.js');
+const streamController = require('../../converter/controller.js');
 
 const skill = new Skills();
 
@@ -37,7 +38,7 @@ function ping(req, res, next) {
     process: serviceHelper.getProcessInfo(),
   };
 
-  serviceHelper.sendResponse(res, true, ackJSON); // Send response back to caller
+  serviceHelper.sendResponse(res, true, ackJSON);
   next();
 }
 skill.get('/ping', ping);
@@ -75,5 +76,31 @@ async function reRegister(req, res, next) {
   next();
 }
 skill.get('/reregister', reRegister);
+
+/**
+ * @api {get} /restart
+ * @apiName restart
+ * @apiGroup Root
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   HTTPS/1.1 200 OK
+ *   {
+ *     sucess: 'true'
+ *   }
+ *
+ * @apiErrorExample {json} Error-Response:
+ *   HTTPS/1.1 400 Bad Request
+ *   {
+ *     data: Error message
+ *   }
+ *
+ */
+function reStart(req, res, next) {
+  serviceHelper.log('trace', 'reStart', 'reStart API called');
+  streamController.reStart();
+  serviceHelper.sendResponse(res, true, 'Restarting all streams');
+  next();
+}
+skill.get('/restart', reStart);
 
 module.exports = skill;
