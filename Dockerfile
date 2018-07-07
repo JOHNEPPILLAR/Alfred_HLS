@@ -1,4 +1,4 @@
-FROM node:10.3
+FROM node:10
 
 USER root
 
