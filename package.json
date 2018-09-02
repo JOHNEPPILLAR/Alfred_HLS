@@ -1,6 +1,6 @@
 {
   "name": "alfred_hls_service",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Alfred HLS Media Streaming Service",
   "main": "lib/server.js",
   "scripts": {
@@ -11,23 +11,23 @@
   "dependencies": {
     "dateformat": "*",
     "dotenv": "*",
-    "winston": "*",
     "fluent-ffmpeg": "*",
     "fs": "*",
-    "url": "*",
+    "ip": "*",
+    "os": "*",
     "path": "*",
-    "zlib": "*",
     "pure-uuid": "*",
     "request": "*",
     "request-promise": "*",
     "restify": "*",
     "restify-router": "*",
-    "ip": "*",
-    "os": "*"
+    "url": "*",
+    "winston": "*",
+    "zlib": "*"
   },
   "devDependencies": {
-    "eslint": "^4.19.1",
-    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint": "^5.5.0",
+    "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0"
   },
   "directories": {
