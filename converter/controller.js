@@ -1,8 +1,9 @@
 /**
  * Import external libraries
  */
-const serviceHelper = require('../lib/helper.js');
 const childProcess = require('child_process');
+
+const serviceHelper = require('../lib/helper.js');
 
 const poolingInterval = 5000; // 5 seconds
 const childProcesses = [];
@@ -13,17 +14,17 @@ function convertStreams(camToProcess) {
   childProcesses.push(child);
 }
 
-if (process.env.Mock === 'true') {
-  serviceHelper.log('trace', 'convertStreams', 'Mock mode enabled - streaming static content');
-} else {
-  convertStreams(1);
-  convertStreams(2);
-}
+exports.start = function start() {
+  if (process.env.Mock === 'true') {
+    serviceHelper.log('trace', 'convertStreams', 'Mock mode enabled - streaming static content');
+  } else {
+    convertStreams(1);
+    convertStreams(2);
+  }
+};
 
-module.exports = {
-  reStart() {
-    Array.prototype.forEach.call(childProcesses, (process) => {
-      process.kill();
-    });
-  },
+exports.reStart = function reStart() {
+  Array.prototype.forEach.call(childProcesses, (process) => {
+    process.kill();
+  });
 };

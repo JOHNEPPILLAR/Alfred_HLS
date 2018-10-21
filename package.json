@@ -4,7 +4,7 @@
   "description": "Alfred HLS Media Streaming Service",
   "main": "lib/server.js",
   "scripts": {
-    "start": "node lib/index.js",
+    "start": "node lib/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "JP",
@@ -26,21 +26,8 @@
     "zlib": "*"
   },
   "devDependencies": {
-    "eslint": "^5.5.0",
+    "eslint": "^5.7.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0"
-  },
-  "directories": {
-    "lib": "lib"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/JOHNEPPILLAR/Alfred_HLS_Service.git"
-  },
-  "keywords": [],
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/JOHNEPPILLAR/Alfred_HLS_Service/issues"
-  },
-  "homepage": "https://github.com/JOHNEPPILLAR/Alfred_HLS_Service#readme"
+  }
 }

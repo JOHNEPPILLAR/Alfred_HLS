@@ -1,11 +1,12 @@
 /**
  * Import external libraries
  */
-const serviceHelper = require('../lib/helper.js');
 const ffmpeg = require('fluent-ffmpeg');
 const path = require('path');
 const fs = require('fs');
 const UUID = require('pure-uuid');
+
+const serviceHelper = require('../lib/helper.js');
 
 global.instanceTraceID = new UUID(4); // Set new UUID
 
