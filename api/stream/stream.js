@@ -2,10 +2,14 @@
  * Import external libraries
  */
 const Skills = require('restify-router').Router;
-const serviceHelper = require('../../lib/helper.js');
 const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
+
+/**
+ * Import helper libraries
+ */
+const serviceHelper = require('../../lib/helper.js');
 
 const CONTENT_TYPE = {
   MANIFEST: 'application/vnd.apple.mpegurl',
