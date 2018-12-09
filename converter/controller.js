@@ -3,6 +3,9 @@
  */
 const childProcess = require('child_process');
 
+/**
+ * Import helper libraries
+ */
 const serviceHelper = require('../lib/helper.js');
 
 const poolingInterval = 5000; // 5 seconds

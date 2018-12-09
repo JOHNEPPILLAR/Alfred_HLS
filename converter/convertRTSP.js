@@ -6,6 +6,9 @@ const path = require('path');
 const fs = require('fs');
 const UUID = require('pure-uuid');
 
+/**
+ * Import helper libraries
+ */
 const serviceHelper = require('../lib/helper.js');
 
 global.instanceTraceID = new UUID(4); // Set new UUID
@@ -43,7 +46,7 @@ function finishedProcessing() {
 }
 
 function encodingError(err) {
-  serviceHelper.log('error', `encodingError - ${camTitle}`, err);
+  serviceHelper.log('error', `encodingError - ${camTitle}`, err.message);
   serviceHelper.log('trace', `encodingError - ${camTitle}`, 'Exit program');
   process.exit();
 }
@@ -60,12 +63,12 @@ function convertRTSPtoHLS() {
         serviceHelper.log('trace', `convertRTSPtoHLS - ${camTitle}`, 'Stream storeage folder does not exist, so creating folder');
         fs.mkdir('streams', (dirErr) => {
           serviceHelper.log('trace', `convertRTSPtoHLS - ${camTitle}`, 'Creating streams folder');
-          if (dirErr) serviceHelper.log('error', `convertRTSPtoHLS - ${camTitle}`, dirErr);
+          if (dirErr) serviceHelper.log('error', `convertRTSPtoHLS - ${camTitle}`, dirErr.message);
           process.exit();
         });
         fs.mkdir(directory, (dirErr) => {
           serviceHelper.log('trace', `convertRTSPtoHLS - ${camTitle}`, 'Creating full streams folder');
-          if (dirErr) serviceHelper.log('error', `convertRTSPtoHLS - ${camTitle}`, dirErr);
+          if (dirErr) serviceHelper.log('error', `convertRTSPtoHLS - ${camTitle}`, dirErr.message);
           process.exit();
         });
       }
@@ -100,7 +103,7 @@ function convertRTSPtoHLS() {
       return true;
     });
   } catch (err) {
-    serviceHelper.log('error', `convertRTSPtoHLS - ${camTitle}`, err);
+    serviceHelper.log('error', `convertRTSPtoHLS - ${camTitle}`, err.message);
     process.exit();
   }
 }

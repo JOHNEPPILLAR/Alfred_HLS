@@ -70,13 +70,9 @@ skill.get('/ping', ping);
  */
 async function reRegister(req, res, next) {
   serviceHelper.log('trace', 'reRegister', 'reRegister API called');
-
-  let returnMessage = 'Re-registered service';
-
-  if (!serviceHelper.registerService()) returnMessage = 'Unable to re-register service';
-
-  serviceHelper.log('trace', 'reRegister', returnMessage);
-  serviceHelper.sendResponse(res, false, returnMessage);
+  serviceHelper.log('trace', 'reRegister', 'Attempt to reRegister service');
+  serviceHelper.registerService();
+  serviceHelper.sendResponse(res, false, 'Attempt to reRegister service called');
   next();
 }
 skill.get('/reregister', reRegister);
