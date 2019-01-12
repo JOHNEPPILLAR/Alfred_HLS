@@ -24,11 +24,11 @@ switch (camNumber) {
   case '1':
   default:
     camURL = process.env.cam1_url;
-    camTitle = 'Lottie Cam';
+    camTitle = 'Kids Room';
     break;
   case '2':
     camURL = process.env.cam2_url;
-    camTitle = 'Harriet Cam';
+    camTitle = 'Living Room';
     break;
 }
 

@@ -22,7 +22,7 @@ exports.start = function start() {
     serviceHelper.log('trace', 'convertStreams', 'Mock mode enabled - streaming static content');
   } else {
     convertStreams(1);
-    convertStreams(2);
+    // convertStreams(2);
   }
 };
 
