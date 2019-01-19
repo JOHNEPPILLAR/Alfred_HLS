@@ -9,6 +9,7 @@ const childProcess = require('child_process');
 const serviceHelper = require('../lib/helper.js');
 
 const poolingInterval = 5000; // 5 seconds
+const restartInterval = 15 * 60 * 1000; // 15 minutes
 const childProcesses = [];
 
 function convertStreams(camToProcess) {
@@ -23,6 +24,12 @@ exports.start = function start() {
   } else {
     convertStreams(1);
     // convertStreams(2);
+
+    setInterval(() => {
+      Array.prototype.forEach.call(childProcesses, (process) => {
+        process.kill();
+      });
+    }, restartInterval);
   }
 };
 
