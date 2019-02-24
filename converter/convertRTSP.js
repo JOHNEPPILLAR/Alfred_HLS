@@ -63,12 +63,12 @@ function convertRTSPtoHLS() {
         serviceHelper.log('trace', `convertRTSPtoHLS - ${camTitle}`, 'Stream storeage folder does not exist, so creating folder');
         fs.mkdir('streams', (dirErr) => {
           serviceHelper.log('trace', `convertRTSPtoHLS - ${camTitle}`, 'Creating streams folder');
-          if (dirErr) serviceHelper.log('error', `convertRTSPtoHLS - ${camTitle}`, dirErr.message);
+          if (dirErr) serviceHelper.log('warn', `convertRTSPtoHLS - ${camTitle}`, dirErr.message);
           process.exit();
         });
         fs.mkdir(directory, (dirErr) => {
           serviceHelper.log('trace', `convertRTSPtoHLS - ${camTitle}`, 'Creating full streams folder');
-          if (dirErr) serviceHelper.log('error', `convertRTSPtoHLS - ${camTitle}`, dirErr.message);
+          if (dirErr) serviceHelper.log('warn', `convertRTSPtoHLS - ${camTitle}`, dirErr.message);
           process.exit();
         });
       }
