@@ -24,7 +24,6 @@ exports.start = function start() {
   } else {
     convertStreams(1);
     // convertStreams(2);
-
     setInterval(() => {
       Array.prototype.forEach.call(childProcesses, (process) => {
         process.kill();

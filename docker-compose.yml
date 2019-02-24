@@ -1,0 +1,13 @@
+version: '3.5'
+
+services:
+
+  alfred_hls_service:
+    build: .
+    image: alfred_hls_service:latest
+    container_name: alfred_hls_service
+    restart: always
+    ports:
+      - "3982:3982"
+    extra_hosts:
+      - "alfred_elk_elasticsearch_1:192.168.1.4"

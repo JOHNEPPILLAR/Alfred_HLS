@@ -36,12 +36,12 @@ switch (camNumber) {
  * Stream coverter events
  */
 function startProcessing() {
-  serviceHelper.log('trace', 'startProcessing', `Started converting ${camTitle} rtsp stream to hls`);
+  serviceHelper.log('trace', `startProcessing  - ${camTitle}`, 'Started converting rtsp stream to hls');
 }
 
 function finishedProcessing() {
-  serviceHelper.log('trace', 'finishedProcessing', `Started converting ${camTitle} rtsp stream to hls`);
-  serviceHelper.log('trace', `encodingError - ${camTitle}`, 'Exit program');
+  serviceHelper.log('warn', `finishedProcessing - ${camTitle}`, 'Finished converting rtsp stream to hls');
+  serviceHelper.log('trace', `finishedProcessing - ${camTitle}`, 'Exit program');
   process.exit();
 }
 

@@ -4,7 +4,8 @@
   "description": "Alfred HLS Media Streaming Service",
   "main": "lib/server.js",
   "scripts": {
-    "start": "node lib/server.js",
+    "start": "node lib/server.js | pino-elasticsearch -i alfred_iot_data_collector_service -H alfred_elk_elasticsearch_1 -p 9200",
+    "dev": "nodemon lib/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "JP",
@@ -22,7 +23,8 @@
     "restify": "latest",
     "restify-router": "latest",
     "url": "latest",
-    "winston": "latest",
+    "pino": "latest",
+    "pino-pretty": "latest",
     "zlib": "latest"
   },
   "devDependencies": {
