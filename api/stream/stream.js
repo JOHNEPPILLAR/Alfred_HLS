@@ -72,7 +72,7 @@ async function getSegmentStream(req, res, next, filePath) {
 }
 
 async function createStream(req, res, next) {
-  serviceHelper.log('trace', 'createStream', `Create stream API called for url: ${req.url}`);
+  serviceHelper.log('trace', `Create stream API called for url: ${req.url}`);
 
   // Map path to files
   const urlPath = req.url.split('/');
@@ -86,7 +86,7 @@ async function createStream(req, res, next) {
   // Check if stream is ready
   fs.exists(filePath, async (exists) => {
     if (!exists) {
-      serviceHelper.log('error', 'createStream', 'Stream not ready');
+      serviceHelper.log('error', 'Stream not ready');
       serviceHelper.sendResponse(res, 404, 'Stream not ready');
       next();
       return false;

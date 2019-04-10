@@ -36,18 +36,18 @@ switch (camNumber) {
  * Stream coverter events
  */
 function startProcessing() {
-  serviceHelper.log('trace', `startProcessing  - ${camTitle}`, 'Started converting rtsp stream to hls');
+  serviceHelper.log('trace', `${camTitle} - Started converting rtsp stream to hls`);
 }
 
 function finishedProcessing() {
-  serviceHelper.log('warn', `finishedProcessing - ${camTitle}`, 'Finished converting rtsp stream to hls');
-  serviceHelper.log('trace', `finishedProcessing - ${camTitle}`, 'Exit program');
+  serviceHelper.log('warn', `${camTitle} - Finished converting and about to exit`);
+  serviceHelper.log('trace', `${camTitle} - Exit program`);
   process.exit();
 }
 
 function encodingError(err) {
-  serviceHelper.log('error', `encodingError - ${camTitle}`, err.message);
-  serviceHelper.log('trace', `encodingError - ${camTitle}`, 'Exit program');
+  serviceHelper.log('error', err.message);
+  serviceHelper.log('trace', `${camTitle} - Encoding error, about to exit`);
   process.exit();
 }
 
@@ -60,20 +60,20 @@ function convertRTSPtoHLS() {
     const directory = `streams/${camNumber}`;
     fs.stat(directory, (err) => {
       if (err) {
-        serviceHelper.log('trace', `convertRTSPtoHLS - ${camTitle}`, 'Stream storeage folder does not exist, so creating folder');
+        serviceHelper.log('trace', `${camTitle} - Stream storeage folder does not exist, so creating folder`);
         fs.mkdir('streams', (dirErr) => {
-          serviceHelper.log('trace', `convertRTSPtoHLS - ${camTitle}`, 'Creating streams folder');
+          serviceHelper.log('trace', `${camTitle} - Creating streams folder`);
           if (dirErr) serviceHelper.log('warn', `convertRTSPtoHLS - ${camTitle}`, dirErr.message);
           process.exit();
         });
         fs.mkdir(directory, (dirErr) => {
-          serviceHelper.log('trace', `convertRTSPtoHLS - ${camTitle}`, 'Creating full streams folder');
-          if (dirErr) serviceHelper.log('warn', `convertRTSPtoHLS - ${camTitle}`, dirErr.message);
+          serviceHelper.log('trace', `${camTitle} - Creating main streams folder`);
+          if (dirErr) serviceHelper.log('warn', `${camTitle} - ${dirErr.message}`);
           process.exit();
         });
       }
       fs.readdir(directory, (dirErr, files) => {
-        serviceHelper.log('trace', `convertRTSPtoHLS - ${camTitle}`, 'Deleting any old files');
+        serviceHelper.log('trace', `${camTitle} - Deleting old files`);
         if (dirErr) throw dirErr;
         files.forEach((file) => {
           fs.unlink(path.join(directory, file), (fileErr) => {
@@ -82,7 +82,7 @@ function convertRTSPtoHLS() {
         });
 
         // Start converting
-        serviceHelper.log('trace', `convertRTSPtoHLS - ${camTitle}`, 'Start converting RTSP to HLS');
+        serviceHelper.log('trace', `${camTitle} - Start converting RTSP to HLS`);
         ffmpeg(camURL, { timeout: 432000 }).addOptions([
           // '-c:v libx264',
           // '-c:a aac',
@@ -103,7 +103,7 @@ function convertRTSPtoHLS() {
       return true;
     });
   } catch (err) {
-    serviceHelper.log('error', `convertRTSPtoHLS - ${camTitle}`, err.message);
+    serviceHelper.log('error', err.message);
     process.exit();
   }
 }

@@ -31,7 +31,7 @@ const skill = new Skills();
  *
  */
 function ping(req, res, next) {
-  serviceHelper.log('trace', 'ping', 'Ping API called');
+  serviceHelper.log('trace', 'Ping API called');
 
   const ackJSON = {
     service: process.env.ServiceName,
@@ -66,7 +66,7 @@ skill.get('/ping', ping);
  *
  */
 function reStart(req, res, next) {
-  serviceHelper.log('info', 'reStart', 'reStart API called');
+  serviceHelper.log('info', 'reStart API called');
   streamController.reStart();
   serviceHelper.sendResponse(res, true, 'Restarting all streams');
   next();
