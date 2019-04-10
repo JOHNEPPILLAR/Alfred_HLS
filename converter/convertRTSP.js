@@ -36,7 +36,7 @@ switch (camNumber) {
  * Stream coverter events
  */
 function startProcessing() {
-  serviceHelper.log('trace', `${camTitle} - Started converting rtsp stream to hls`);
+  serviceHelper.log('info', `${camTitle} - Started converting rtsp stream to hls`);
 }
 
 function finishedProcessing() {
@@ -82,7 +82,6 @@ function convertRTSPtoHLS() {
         });
 
         // Start converting
-        serviceHelper.log('trace', `${camTitle} - Start converting RTSP to HLS`);
         ffmpeg(camURL, { timeout: 432000 }).addOptions([
           // '-c:v libx264',
           // '-c:a aac',
