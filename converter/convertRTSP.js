@@ -63,7 +63,7 @@ function convertRTSPtoHLS() {
         serviceHelper.log('trace', `${camTitle} - Stream storeage folder does not exist, so creating folder`);
         fs.mkdir('streams', (dirErr) => {
           serviceHelper.log('trace', `${camTitle} - Creating streams folder`);
-          if (dirErr) serviceHelper.log('warn', `convertRTSPtoHLS - ${camTitle}`, dirErr.message);
+          if (dirErr) serviceHelper.log('warn', `${camTitle} - ${dirErr.message}`);
           process.exit();
         });
         fs.mkdir(directory, (dirErr) => {
