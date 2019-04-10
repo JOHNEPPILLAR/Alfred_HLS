@@ -34,6 +34,7 @@ exports.start = function start() {
 
 exports.reStart = function reStart() {
   Array.prototype.forEach.call(childProcesses, (process) => {
+    serviceHelper.log('info', 'Restarting streams');
     process.kill();
   });
 };
