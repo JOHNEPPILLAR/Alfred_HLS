@@ -11,8 +11,9 @@
   "dependencies": {
     "dateformat": "latest",
     "dotenv": "latest",
-    "fluent-ffmpeg": "latest",
     "fs": "latest",
+    "socket.io": "latest",
+    "rimraf": "latest",
     "ip": "latest",
     "os": "latest",
     "path": "latest",

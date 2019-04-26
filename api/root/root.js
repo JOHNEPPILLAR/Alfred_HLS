@@ -7,7 +7,6 @@ const Skills = require('restify-router').Router;
  * Import helper libraries
  */
 const serviceHelper = require('../../lib/helper.js');
-const streamController = require('../../converter/controller.js');
 
 const skill = new Skills();
 
@@ -46,31 +45,5 @@ function ping(req, res, next) {
   next();
 }
 skill.get('/ping', ping);
-
-/**
- * @api {get} /restart
- * @apiName restart
- * @apiGroup Root
- *
- * @apiSuccessExample {json} Success-Response:
- *   HTTPS/1.1 200 OK
- *   {
- *     success: 'true'
- *   }
- *
- * @apiErrorExample {json} Error-Response:
- *   HTTPS/1.1 400 Bad Request
- *   {
- *     data: Error message
- *   }
- *
- */
-function reStart(req, res, next) {
-  serviceHelper.log('info', 'reStart API called');
-  streamController.reStart();
-  serviceHelper.sendResponse(res, true, 'Restarting all streams');
-  next();
-}
-skill.get('/restart', reStart);
 
 module.exports = skill;
