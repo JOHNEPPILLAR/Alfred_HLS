@@ -9,6 +9,7 @@
   },
   "author": "JP",
   "dependencies": {
+    "elastic-apm-node": "latest",
     "dateformat": "latest",
     "dotenv": "latest",
     "fs": "latest",
