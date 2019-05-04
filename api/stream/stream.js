@@ -8,6 +8,7 @@ const zlib = require('zlib');
 const UUID = require('pure-uuid');
 const childProcess = require('child_process');
 const rimraf = require('rimraf');
+const ffmpeg = require('fluent-ffmpeg');
 
 /**
  * Import helper libraries
@@ -22,18 +23,18 @@ const CONTENT_TYPE = {
 };
 
 function checkFileExists(filePath) {
-  const timeout = 10000; // 10 Seconds
-  return new Promise(((resolve, reject) => {
+  const timeout = 30000; // 30 Seconds
+  return new Promise(((resolve) => {
     const timer = setTimeout(() => {
       watcher.close();
-      reject(new Error('File did not exists and was not created during the timeout.'));
+      resolve(false);
     }, timeout);
 
     fs.access(filePath, fs.constants.R_OK, (err) => {
       if (!err) {
         clearTimeout(timer);
         watcher.close();
-        resolve();
+        resolve(true);
       }
     });
     const dir = path.dirname(filePath);
@@ -43,7 +44,7 @@ function checkFileExists(filePath) {
       if (filename === basename) {
         clearTimeout(timer);
         watcher.close();
-        resolve();
+        resolve(true);
       }
     });
   }));
@@ -79,11 +80,15 @@ function removeTempFolder(removeUUID) {
 function removeStream(streamUUID) {
   let foundStream = false;
   global.streamsStore.forEach((item, index, object) => {
-    if (item[0].format() === streamUUID) {
-      item[1].kill();
-      removeTempFolder(streamUUID);
-      object.splice(index, 1);
-      foundStream = true;
+    try {
+      if (item[0].format() === streamUUID) {
+        item[1].kill();
+        removeTempFolder(streamUUID);
+        object.splice(index, 1);
+        foundStream = true;
+      }
+    } catch (err) {
+      serviceHelper.log('error', err.message);
     }
   });
   return foundStream;
@@ -122,7 +127,6 @@ skill.get('/stop', stopStream);
  *
  */
 async function startStream(req, res, next) {
-  let writeStream;
   let streamUUID;
 
   try {
@@ -136,8 +140,6 @@ async function startStream(req, res, next) {
     const folderPath = `streams/${streamUUID}`;
     const fullFilePath = `${folderPath}/cam.m3u8`;
 
-    // removeTempFolder(streamUUID.format());
-
     serviceHelper.log('trace', 'Create temp storage path');
     fs.mkdirSync(folderPath);
 
@@ -146,36 +148,55 @@ async function startStream(req, res, next) {
       serviceHelper.log('info', 'Mock mode enabled, using test file as stream');
       camURL = process.env.mockCamURL;
     }
-    const args = ['-i', camURL, '-hls_time', 3, '-hls_wrap', 10, fullFilePath];
 
-    serviceHelper.log('trace', 'Start converting');
-    writeStream = childProcess.spawn('ffmpeg',
-      args,
-      { detached: false, stdio: 'ignore' });
+    // writeStream = childProcess.spawn
+
+    const writeStream = ffmpeg(camURL, { timeout: 432000 });
+    writeStream.addOptions([
+      '-profile:v baseline',
+      '-level: 3.0',
+      '-f hls',
+      '-hls_time 3',
+      '-hls_wrap 10',
+    ]);
+    writeStream.output(fullFilePath)
+      .once('start', async () => {
+        serviceHelper.log('trace', 'Started converting');
+        global.streamsStore.push([streamUUID, writeStream]);
+        const streaming = await checkFileExists(fullFilePath);
+        if (streaming) {
+          serviceHelper.log('info', `New stream started. Active streams: ${global.streamsStore.length}`);
+          serviceHelper.sendResponse(res, true, streamUUID.format());
+        } else {
+          serviceHelper.log('error', `Stream file check timeout: ${streamUUID.format()}`);
+          serviceHelper.sendResponse(res, false, 'Not able to start stream');
+          removeStream(streamUUID.format());
+        }
+        next();
+      })
+      .on('error', () => {
+        serviceHelper.log('info', `Stream converter error: ${streamUUID.format()}`);
+      })
+      .once('end', () => {
+        serviceHelper.log('trace', `Stream ended: ${streamUUID.format()}`);
+        serviceHelper.log('info', `Stream ${streamUUID.format()} ended. Active streams: ${global.streamsStore.length}`);
+      })
+      .run();
 
     // writeStream.unref();
-
-    await checkFileExists(fullFilePath);
-
-    global.streamsStore.push([streamUUID, writeStream]);
-    serviceHelper.log('info', `${global.streamsStore.length} active stream(s)`);
 
     // Timeout stream
     setTimeout(() => {
       serviceHelper.log('trace', `Timeout reached for stream: ${streamUUID.format()}`);
       if (removeStream(streamUUID.format())) {
-        serviceHelper.log('info', `Timmed out stream: ${streamUUID.format()}`);
+        serviceHelper.log('info', `Tidy up old stream: ${streamUUID.format()}`);
         serviceHelper.log('info', `${global.streamsStore.length} active stream(s)`);
       } else {
         serviceHelper.log('trace', `Stream not active: ${streamUUID.format()}`);
       }
     }, 600000); // 10 minutes
-
-    serviceHelper.sendResponse(res, true, streamUUID.format());
-    next();
   } catch (err) {
     serviceHelper.log('error', err.message);
-    writeStream.kill();
     removeTempFolder(streamUUID.format());
     serviceHelper.sendResponse(res, false, err.message);
     next();

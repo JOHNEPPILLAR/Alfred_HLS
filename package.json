@@ -26,7 +26,8 @@
     "url": "latest",
     "pino": "latest",
     "pino-pretty": "latest",
-    "zlib": "latest"
+    "zlib": "latest",
+    "fluent-ffmpeg": "latest"
   },
   "devDependencies": {
     "eslint": "latest",
