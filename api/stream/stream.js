@@ -102,7 +102,7 @@ async function stopStream(req, res, next) {
     serviceHelper.log('trace', `Unable to stop stream: ${streamUUID}`);
     serviceHelper.sendResponse(res, true, `Unable to stop stream: ${streamUUID}`);
   }
-  serviceHelper.log('info', `${global.streamsStore.length} active stream(s)`);
+  serviceHelper.log('info', `Streams active: ${global.streamsStore.length} `);
   next();
 }
 skill.get('/stop', stopStream);
@@ -202,7 +202,6 @@ async function startStream(req, res, next) {
   }
 }
 skill.get('/start', startStream);
-
 
 /**
  * @api {get} /play
