@@ -23,7 +23,7 @@ const CONTENT_TYPE = {
 };
 
 function checkFileExists(filePath) {
-  const timeout = 30000; // 30 Seconds
+  const timeout = 60000; // 60 Seconds
   return new Promise(((resolve) => {
     const timer = setTimeout(() => {
       watcher.close();
