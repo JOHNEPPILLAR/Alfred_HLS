@@ -6,7 +6,6 @@ const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
 const UUID = require('pure-uuid');
-const childProcess = require('child_process');
 const rimraf = require('rimraf');
 const ffmpeg = require('fluent-ffmpeg');
 
@@ -23,7 +22,7 @@ const CONTENT_TYPE = {
 };
 
 function checkFileExists(filePath) {
-  const timeout = 60000; // 60 Seconds
+  const timeout = 90000; // 90 Seconds
   return new Promise(((resolve) => {
     const timer = setTimeout(() => {
       watcher.close();
@@ -174,8 +173,8 @@ async function startStream(req, res, next) {
         }
         next();
       })
-      .on('error', () => {
-        serviceHelper.log('info', `Stream converter error: ${streamUUID.format()}`);
+      .on('error', (err) => {
+        serviceHelper.log('error', `Stream ${streamUUID.format()} error: ${err.message}`);
       })
       .once('end', () => {
         serviceHelper.log('trace', `Stream ended: ${streamUUID.format()}`);
