@@ -136,7 +136,7 @@ async function startStream(req, res, next) {
     const folderPath = `streams/${streamUUID}`;
     const fullFilePath = `${folderPath}/cam.m3u8`;
 
-    removeTempFolder(streamUUID.format());
+    // removeTempFolder(streamUUID.format());
 
     serviceHelper.log('trace', 'Create temp storage path');
     fs.mkdirSync(folderPath);
