@@ -23,8 +23,9 @@ const CONTENT_TYPE = {
 
 function checkFileExists(filePath) {
   const timeout = 90000; // 90 Seconds
-  return new Promise(((resolve) => {
+  return new Promise((resolve) => {
     const timer = setTimeout(() => {
+      // eslint-disable-next-line no-use-before-define
       watcher.close();
       resolve(false);
     }, timeout);
@@ -32,6 +33,7 @@ function checkFileExists(filePath) {
     fs.access(filePath, fs.constants.R_OK, (err) => {
       if (!err) {
         clearTimeout(timer);
+        // eslint-disable-next-line no-use-before-define
         watcher.close();
         resolve(true);
       }
@@ -46,7 +48,7 @@ function checkFileExists(filePath) {
         resolve(true);
       }
     });
-  }));
+  });
 }
 
 function removeTempFolder(removeUUID) {
@@ -131,7 +133,7 @@ async function startStream(req, res, next) {
   try {
     serviceHelper.log('trace', 'Create base streams folder if missing');
     fs.mkdirSync('streams');
-  // eslint-disable-next-line no-empty
+    // eslint-disable-next-line no-empty
   } catch (err) {}
 
   try {
@@ -158,13 +160,17 @@ async function startStream(req, res, next) {
       '-hls_time 3',
       '-hls_wrap 10',
     ]);
-    writeStream.output(fullFilePath)
+    writeStream
+      .output(fullFilePath)
       .once('start', async () => {
         serviceHelper.log('trace', 'Started converting');
         global.streamsStore.push([streamUUID, writeStream]);
         const streaming = await checkFileExists(fullFilePath);
         if (streaming) {
-          serviceHelper.log('info', `New stream started. Active streams: ${global.streamsStore.length}`);
+          serviceHelper.log(
+            'info',
+            `New stream started. Active streams: ${global.streamsStore.length}`,
+          );
           serviceHelper.sendResponse(res, true, streamUUID.format());
         } else {
           serviceHelper.log('error', `Stream file check timeout: ${streamUUID.format()}`);
@@ -178,7 +184,10 @@ async function startStream(req, res, next) {
       })
       .once('end', () => {
         serviceHelper.log('trace', `Stream ended: ${streamUUID.format()}`);
-        serviceHelper.log('info', `Stream ${streamUUID.format()} ended. Active streams: ${global.streamsStore.length}`);
+        serviceHelper.log(
+          'info',
+          `Stream ${streamUUID.format()} ended. Active streams: ${global.streamsStore.length}`,
+        );
       })
       .run();
 
@@ -233,7 +242,10 @@ async function getManifestStream(req, res, next, filePath) {
       const gzip = zlib.createGzip();
       stream.pipe(gzip).pipe(res);
     } else {
-      stream.pipe(res, 'utf-8');
+      stream.pipe(
+        res,
+        'utf-8',
+      );
     }
   } catch (err) {
     res.statusCode = 500;
