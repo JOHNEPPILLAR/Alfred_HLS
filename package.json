@@ -9,7 +9,7 @@
   },
   "author": "JP",
   "dependencies": {
-    "elasticsearch": "^16.1.0",
+    "elasticsearch": "^16.1.1",
     "dateformat": "^3.0.3",
     "dotenv": "^8.0.0",
     "fs": "^0.0.2",
@@ -20,7 +20,7 @@
     "pure-uuid": "^1.5.7",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
-    "restify": "^8.3.2",
+    "restify": "^8.3.3",
     "restify-router": "^0.5.1",
     "url": "^0.11.0",
     "pino": "^5.12.6",
