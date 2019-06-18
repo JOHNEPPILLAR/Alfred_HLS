@@ -11,4 +11,4 @@ npm update
 npm install
 
 echo "Run the server"
-npm run dev
+npm run test
