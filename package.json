@@ -9,7 +9,7 @@
   },
   "author": "JP",
   "dependencies": {
-    "@elastic/elasticsearch": "^7.1.0",
+    "@elastic/elasticsearch": "^7.2.0",
     "dateformat": "^3.0.3",
     "dotenv": "^8.0.0",
     "fs": "^0.0.2",
@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "eslint": "^6.0.1",
-    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-airbnb-base": "^13.2.0",
     "eslint-plugin-import": "^2.18.0"
   }
 }
