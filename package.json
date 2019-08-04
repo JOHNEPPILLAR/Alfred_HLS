@@ -9,7 +9,7 @@
   },
   "author": "JP",
   "dependencies": {
-    "@elastic/elasticsearch": "^7.2.0",
+    "@elastic/elasticsearch": "^7.3.0",
     "dateformat": "^3.0.3",
     "dotenv": "^8.0.0",
     "fs": "^0.0.2",
@@ -20,16 +20,16 @@
     "pure-uuid": "^1.5.7",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
-    "restify": "^8.3.3",
+    "restify": "^8.4.0",
     "restify-router": "^0.5.1",
     "url": "^0.11.0",
-    "pino": "^5.13.0",
+    "pino": "^5.13.1",
     "pino-pretty": "^3.2.0",
     "zlib": "^1.0.5",
     "fluent-ffmpeg": "^2.1.2"
   },
   "devDependencies": {
-    "eslint": "^6.0.1",
+    "eslint": "^6.1.0",
     "eslint-config-airbnb-base": "^13.2.0",
     "eslint-plugin-import": "^2.18.2"
   }
