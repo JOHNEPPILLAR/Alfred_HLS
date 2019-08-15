@@ -6,7 +6,13 @@ services:
     image: alfred_hls_service:latest
     container_name: alfred_hls_service
     restart: always
+    hostname: alfred_hls_service
+    networks:
+      - alfred
+    command: npm run prod
     ports:
       - '3982:3978'
-    hostname: alfred_hls_service
-    command: npm run prod
+networks:
+  alfred:
+    name: alfred
+    driver: bridge
