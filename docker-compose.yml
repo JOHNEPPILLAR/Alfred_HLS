@@ -10,8 +10,6 @@ services:
     networks:
       - alfred
     command: npm run prod
-    ports:
-      - '3982:3978'
 networks:
   alfred:
     name: alfred
