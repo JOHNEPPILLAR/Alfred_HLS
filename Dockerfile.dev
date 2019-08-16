@@ -1,0 +1,18 @@
+FROM node:12
+
+USER root
+
+RUN ln -snf /usr/share/zoneinfo/Europe/London /etc/localtime && echo Europe/London > /etc/timezone \
+	&& apt-get install ca-certificates \
+	&& apt-get -y update \
+	&& apt-get install -y ffmpeg \
+	&& mkdir -p /home/nodejs/app 
+
+WORKDIR /home/nodejs/app
+
+COPY . /home/nodejs/app
+
+RUN npm install nodemon \
+  && npm install
+
+EXPOSE 3978
