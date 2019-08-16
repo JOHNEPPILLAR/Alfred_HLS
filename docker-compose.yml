@@ -9,7 +9,7 @@ services:
     hostname: alfred_hls_service
     networks:
       - alfred
-    command: npm run test
+    command: npm run prod
     volumes:
       - video_data:/streams
 
