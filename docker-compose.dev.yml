@@ -13,10 +13,12 @@ services:
       - alfred
     command: npm run test
     volumes:
-      - data:/home/nodejs/app/streams
+      - video_data:/streams
 
 volumes:
-  data:
+  video_data:
+    external:
+      name: video_data
 
 networks:
   alfred:
