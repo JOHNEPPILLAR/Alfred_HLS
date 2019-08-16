@@ -65,7 +65,6 @@ const RTSPRecorder = class {
       return ['-vframes', '1'];
     }
     return [];
-    // return ['-r', 60, '-t', 3540, '-vcodec', 'copy'];
   }
 
   getChildProcess(fileName) {
@@ -78,19 +77,10 @@ const RTSPRecorder = class {
 
     const child = childProcess.spawn('ffmpeg',
       args,
-//      { detached: false, stdio: 'ignore' });
-      { detached: false });
+      { detached: false, stdio: 'ignore' });
 
     child.once('exit', (code, signal) => {
       serviceHelper.log('error', `child process exited with code ${code} and signal ${signal}`);
-    });
-
-    child.stdout.on('data', (data) => {
-      serviceHelper.log('info', `child stdout:\n${data}`);
-    });
-
-    child.stderr.on('data', (data) => {
-      serviceHelper.log('error', `child stderr:\n${data}`);
     });
 
     return child;
@@ -143,6 +133,7 @@ const RTSPRecorder = class {
     }
 
     if (this.writeStream && this.writeStream.binded) {
+      // eslint-disable-next-line consistent-return
       return false;
     }
 
@@ -152,6 +143,7 @@ const RTSPRecorder = class {
         self.recordStream();
       });
       this.killStream();
+      // eslint-disable-next-line consistent-return
       return false;
     }
 
