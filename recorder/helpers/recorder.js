@@ -75,9 +75,24 @@ const RTSPRecorder = class {
       args.push(item);
     });
     args.push(fileName);
-    return childProcess.spawn('ffmpeg',
+
+    const child = childProcess.spawn('ffmpeg',
       args,
       { detached: false, stdio: 'ignore' });
+
+    child.once('exit', (code, signal) => {
+      serviceHelper.log('error', `child process exited with code ${code} and signal ${signal}`);
+    });
+
+    child.stdout.on('data', (data) => {
+      serviceHelper.log('info', `child stdout:\n${data}`);
+    });
+
+    child.stderr.on('data', (data) => {
+      serviceHelper.log('error', `child stderr:\n${data}`);
+    });
+
+    return child;
   }
 
   stopRecording() {
