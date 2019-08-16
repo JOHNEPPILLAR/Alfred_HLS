@@ -10,6 +10,12 @@ services:
     networks:
       - alfred
     command: npm run prod
+    volumes:
+      - data:/home/nodejs/app/streams
+
+volumes:
+  data: /mnt/local_share/Video
+
 networks:
   alfred:
     name: alfred

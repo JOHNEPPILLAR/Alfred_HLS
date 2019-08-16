@@ -16,7 +16,7 @@ services:
       - data:/home/nodejs/app/streams
 
 volumes:
-  data: /mnt/local_share/Video
+  data:
 
 networks:
   alfred:
