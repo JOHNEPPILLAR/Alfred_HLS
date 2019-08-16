@@ -78,7 +78,8 @@ const RTSPRecorder = class {
 
     const child = childProcess.spawn('ffmpeg',
       args,
-      { detached: false, stdio: 'ignore' });
+//      { detached: false, stdio: 'ignore' });
+      { detached: false });
 
     child.once('exit', (code, signal) => {
       serviceHelper.log('error', `child process exited with code ${code} and signal ${signal}`);
