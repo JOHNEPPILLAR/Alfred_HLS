@@ -12,6 +12,8 @@ services:
     command: npm run prod
     volumes:
       - video_data:/home/nodejs/app/recordings
+    ports:
+      - '3982:3978'
 
 volumes:
   video_data:
