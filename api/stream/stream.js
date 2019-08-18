@@ -118,8 +118,8 @@ async function playStream(req, res, next) {
   // Check if stream is ready
   fs.exists(filePath, async (exists) => {
     if (!exists) {
-      serviceHelper.log('error', `Stream does not exists: ${streamFolder}`);
-      serviceHelper.sendResponse(res, 404, `Stream does not exists: ${streamFolder}`);
+      serviceHelper.log('error', `Stream does not exists: ${streamFolder}/${fileName}`);
+      serviceHelper.sendResponse(res, 404, `Stream does not exists: ${streamFolder}/${fileName}`);
       next();
       return false;
     }
