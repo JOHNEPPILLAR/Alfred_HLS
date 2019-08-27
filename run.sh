@@ -5,12 +5,12 @@ lsof -i :3978
 kill -9 $(lsof -sTCP:LISTEN -i:3978 -t)
 
 #echo "Removing node modules folder and installing latest"
-#rm -rf node_modules
-#ncu -u
-#npm update
-#npm install
-#npm audit
-#snyk test
+rm -rf node_modules
+ncu -u
+npm update
+npm install
+npm audit
+snyk test
 
 echo "Run the server"
 npm run test
