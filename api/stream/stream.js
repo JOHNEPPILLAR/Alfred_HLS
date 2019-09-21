@@ -5,11 +5,11 @@ const Skills = require('restify-router').Router;
 const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
+const serviceHelper = require('alfred_helper');
 
 /**
  * Import helper libraries
  */
-const serviceHelper = require('../../lib/helper.js');
 const RTSPRecorder = require('../../lib//RTSPRecorder.js');
 
 const skill = new Skills();
@@ -28,7 +28,7 @@ const CONTENT_TYPE = {
  *   HTTPS/1.1 200 OK
  *   {
  *     "data": "recordings/cd1a0e08-9b08-4565-a2b6-a2756cf85e8b/cam.m3u8"
-*    }
+ *    }
  *
  * @apiErrorExample {json} Error-Response:
  *   HTTPS/1.1 400 Bad Request
@@ -72,7 +72,9 @@ skill.get('/start', startStream);
  */
 async function getManifestStream(req, res, next, filePath) {
   try {
-    const stream = await fs.createReadStream(filePath, { bufferSize: 64 * 1024 });
+    const stream = await fs.createReadStream(filePath, {
+      bufferSize: 64 * 1024,
+    });
     res.setHeader('Content-Type', CONTENT_TYPE.MANIFEST);
     res.statusCode = 200;
     if (req.acceptsCompression) {
@@ -118,8 +120,15 @@ async function playStream(req, res, next) {
   // Check if stream is ready
   fs.exists(filePath, async (exists) => {
     if (!exists) {
-      serviceHelper.log('error', `Stream does not exists: ${streamFolder}/${fileName}`);
-      serviceHelper.sendResponse(res, 404, `Stream does not exists: ${streamFolder}/${fileName}`);
+      serviceHelper.log(
+        'error',
+        `Stream does not exists: ${streamFolder}/${fileName}`,
+      );
+      serviceHelper.sendResponse(
+        res,
+        404,
+        `Stream does not exists: ${streamFolder}/${fileName}`,
+      );
       next();
       return false;
     }
