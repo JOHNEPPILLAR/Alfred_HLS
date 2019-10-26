@@ -5,12 +5,12 @@ const Skills = require('restify-router').Router;
 const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
-const serviceHelper = require('alfred_helper');
+const serviceHelper = require('alfred-helper');
 
 /**
  * Import helper libraries
  */
-const RTSPRecorder = require('../../lib//RTSPRecorder.js');
+const RTSPRecorder = require('../../../app/server/RTSPRecorder.js');
 
 const skill = new Skills();
 const CONTENT_TYPE = {

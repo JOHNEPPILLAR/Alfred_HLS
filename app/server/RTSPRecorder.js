@@ -5,9 +5,9 @@ const moment = require('moment');
 const childProcess = require('child_process');
 const path = require('path');
 const fs = require('fs');
-const UUID = require('pure-uuid');
 const rimraf = require('rimraf');
-const serviceHelper = require('alfred_helper');
+const UUID = require('pure-uuid');
+const serviceHelper = require('alfred-helper');
 
 const RTSPRecorder = class {
   constructor(config = {}) {

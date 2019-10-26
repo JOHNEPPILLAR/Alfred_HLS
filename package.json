@@ -1,23 +1,27 @@
 {
   "name": "alfred_hls_service",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Alfred HLS Media Streaming Service",
-  "main": "lib/server.js",
+  "license": "MIT",
+  "snyk": true,
+  "main": "app/server/server.js",
   "scripts": {
-    "prod": "node lib/server.js",
-    "test": "nodemon lib/server.js"
+    "prod": "node app/server/server.js",
+    "test": "snyk test && nodemon app/server/server.js",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "author": "JP",
   "dependencies": {
-    "alfred_helper": "git://github.com/johneppillar/alfred_helper_lib",
+    "alfred-helper": "git://github.com/johneppillar/alfred_helper_lib",
     "dateformat": "^3.0.3",
-    "dotenv": "^8.1.0",
+    "dotenv": "^8.2.0",
     "du": "^1.0.0",
     "fs": "^0.0.2",
     "moment": "^2.24.0",
     "path": "^0.12.7",
-    "pino": "^5.13.3",
-    "pino-pretty": "^3.2.1",
+    "pino": "^5.13.5",
+    "pino-pretty": "^3.2.2",
     "pure-uuid": "^1.5.7",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
@@ -28,8 +32,9 @@
     "zlib": "^1.0.5"
   },
   "devDependencies": {
-    "eslint": "^6.4.0",
+    "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.18.2"
+    "eslint-plugin-import": "^2.18.2",
+    "snyk": "^1.239.0"
   }
 }

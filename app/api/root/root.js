@@ -6,7 +6,7 @@ const Skills = require('restify-router').Router;
 /**
  * Import helper libraries
  */
-const serviceHelper = require('alfred_helper');
+const serviceHelper = require('alfred-helper');
 
 const skill = new Skills();
 
