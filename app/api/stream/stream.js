@@ -46,7 +46,7 @@ async function startStream(req, res, next) {
     timeLimit: 600, // 10 minutes for each segmented video file
   });
   const streamUUID = rec.startRecording(); // Start Recording
-  serviceHelper.sendResponse(res, true, streamUUID);
+  serviceHelper.sendResponse(res, 200, streamUUID);
   next();
 }
 skill.get('/start', startStream);

@@ -95,7 +95,7 @@ server.on('NotFound', (req, res, err) => {
 });
 server.on('uncaughtException', (req, res, route, err) => {
   serviceHelper.log('error', `${route}: ${err.message}`);
-  serviceHelper.sendResponse(res, null, err.message);
+  serviceHelper.sendResponse(res, 500, err.message);
 });
 
 server.on('close', () => {
