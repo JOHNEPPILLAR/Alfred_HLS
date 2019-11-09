@@ -20,11 +20,11 @@
     "fs": "^0.0.2",
     "moment": "^2.24.0",
     "path": "^0.12.7",
-    "pino": "^5.13.5",
-    "pino-pretty": "^3.2.2",
+    "pino": "^5.13.6",
+    "pino-pretty": "^3.3.0",
     "pure-uuid": "^1.5.7",
     "request": "^2.88.0",
-    "request-promise": "^4.2.4",
+    "request-promise": "^4.2.5",
     "restify": "^8.4.0",
     "restify-router": "^0.5.1",
     "rimraf": "^3.0.0",
@@ -35,6 +35,6 @@
     "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
-    "snyk": "^1.239.0"
+    "snyk": "^1.244.0"
   }
 }
