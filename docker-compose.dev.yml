@@ -11,7 +11,7 @@ services:
     hostname: alfred_hls_service
     networks:
       - alfred
-    command: npm run test
+    command: npm run local
     volumes:
       - video_data:/home/nodejs/app/recordings
 
