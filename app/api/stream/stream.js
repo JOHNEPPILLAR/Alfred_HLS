@@ -31,7 +31,7 @@ const CONTENT_TYPE = {
  *    }
  *
  * @apiErrorExample {json} Error-Response:
- *   HTTPS/1.1 400 Bad Request
+ *   HTTPS/1.1 500 Internal error
  *   {
  *     data: Error message
  *   }
@@ -39,8 +39,16 @@ const CONTENT_TYPE = {
  */
 async function startStream(req, res, next) {
   serviceHelper.log('trace', `Start stream API called for url: ${req.url}`);
+  const { CamRoom } = req.params;
+  const HLSCam = await serviceHelper.vaultSecret(process.env.ENVIRONMENT, `HLS${CamRoom}RoomCam`);
+  const HLSCamRecord = await serviceHelper.vaultSecret(process.env.ENVIRONMENT, `HLS${CamRoom}RoomRecord`);
+  if (HLSCam instanceof Error || HLSCamRecord instanceof Error) {
+    serviceHelper.log('error', 'Not able to get secret (CAM Info) from vault');
+    return;
+  }
+
   const rec = new RTSPRecorder({
-    url: process.env.camURL,
+    url: HLSCam,
     type: 'stream',
     disableStreaming: true,
     timeLimit: 600, // 10 minutes for each segmented video file
@@ -49,7 +57,7 @@ async function startStream(req, res, next) {
   serviceHelper.sendResponse(res, 200, streamUUID);
   next();
 }
-skill.get('/start', startStream);
+skill.get('/start/:CamRoom', startStream);
 
 /**
  * @api {get} /play
@@ -64,7 +72,7 @@ skill.get('/start', startStream);
  *   }
  *
  * @apiErrorExample {json} Error-Response:
- *   HTTPS/1.1 400 Bad Request
+ *   HTTPS/1.1 500 Internal error
  *   {
  *     data: Error message
  *   }

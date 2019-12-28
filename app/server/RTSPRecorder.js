@@ -96,12 +96,12 @@ const RTSPRecorder = class {
   }
 
   startRecording() {
-    if (process.env.Mock === 'true') {
+    if (process.env.MOCK === 'true') {
       serviceHelper.log(
         'trace',
         'Mock mode enabled, using test file as stream',
       );
-      this.url = process.env.mockCamURL;
+      this.url = process.env.MOCK_CAM_URL;
     }
     if (!this.url) {
       serviceHelper.log('error', `Webcam URL Not Found: ${this.url}`);

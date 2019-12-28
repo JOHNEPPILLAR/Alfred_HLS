@@ -2,24 +2,23 @@
  * Import external libraries
  */
 require('dotenv').config();
+const serviceHelper = require('alfred-helper');
 const rp = require('request-promise');
 const logger = require('pino')();
 
 const options = {
   method: 'GET',
   timeout: 5000,
-  uri: `https://localhost:${process.env.Port}/ping?clientaccesskey=${process.env.ClientAccessKey}`,
   json: true,
   agentOptions: {
     rejectUnauthorized: false,
-  },
-  headers: {
-    'Client-Access-Key': process.env.ClientAccessKey,
   },
 };
 
 async function pingApp() {
   try {
+    const ClientAccessKey = await serviceHelper.vaultSecret(process.env.ENVIRONMENT, 'ClientAccessKey');
+    options.uri = `https://localhost:${process.env.PORT}/ping?clientaccesskey=${ClientAccessKey}`;
     await rp(options);
     process.exit(0);
   } catch (err) {

@@ -1,20 +1,30 @@
-FROM node:12
-
-USER root
+FROM node:13-alpine
 
 RUN ln -snf /usr/share/zoneinfo/Europe/London /etc/localtime && echo Europe/London > /etc/timezone \
-	&& apt-get install ca-certificates \
-	&& apt-get -y update \
-	&& apt-get install -y ffmpeg \
-	&& mkdir -p /home/nodejs/app 
+	&& mkdir -p /home/nodejs/app \
+	&& apk --no-cache --virtual build-dependencies add \
+	git \ 
+	g++ \
+	gcc \
+	libgcc \
+	libstdc++ \
+	linux-headers \
+	make \
+	python \
+	&& npm install --quiet node-gyp -g \
+	&& rm -rf /var/cache/apk/* \
+	&& apt-get install -y ffmpeg
 
 WORKDIR /home/nodejs/app
 
-COPY . /home/nodejs/app
+COPY package*.json ./
 
-RUN npm update \
-	&& npm install --production
+RUN npm install
+
+COPY --chown=node:node . .
+
+USER node
 
 HEALTHCHECK --start-period=60s --interval=10s --timeout=10s --retries=6 CMD ["./healthcheck.sh"]
 
-EXPOSE 3982
+EXPOSE 3978

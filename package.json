@@ -1,14 +1,13 @@
 {
   "name": "alfred_hls_service",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "Alfred HLS Media Streaming Service",
   "license": "MIT",
   "snyk": true,
   "main": "app/server/server.js",
   "scripts": {
-    "prod": "node app/server/server.js",
+    "start": "node app/server/server.js",
     "local": "nodemon app/server/server.js",
-    "test": "snyk test && nodemon app/server/server.js",
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect"
   },
@@ -21,21 +20,21 @@
     "fs": "^0.0.2",
     "moment": "^2.24.0",
     "path": "^0.12.7",
-    "pino": "^5.13.6",
-    "pino-pretty": "^3.3.0",
-    "pure-uuid": "^1.5.7",
+    "pino": "^5.15.0",
+    "pino-pretty": "^3.5.0",
+    "pure-uuid": "^1.5.8",
     "request": "^2.88.0",
     "request-promise": "^4.2.5",
-    "restify": "^8.4.0",
+    "restify": "^8.5.1",
     "restify-router": "^0.5.1",
     "rimraf": "^3.0.0",
     "url": "^0.11.0",
     "zlib": "^1.0.5"
   },
   "devDependencies": {
-    "eslint": "^6.6.0",
+    "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.18.2",
-    "snyk": "^1.244.0"
+    "eslint-plugin-import": "^2.19.1",
+    "snyk": "^1.266.0"
   }
 }
