@@ -11,9 +11,9 @@ RUN ln -snf /usr/share/zoneinfo/Europe/London /etc/localtime && echo Europe/Lond
 	linux-headers \
 	make \
 	python \
+	ffmpeg \
 	&& npm install --quiet node-gyp -g \
-	&& rm -rf /var/cache/apk/* \
-	&& apt-get install -y ffmpeg
+	&& rm -rf /var/cache/apk/*
 
 WORKDIR /home/nodejs/app
 
