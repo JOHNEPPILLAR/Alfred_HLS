@@ -17,8 +17,7 @@ const APIstream = require('../api/stream/stream.js');
 
 global.APITraceID = '';
 global.streamsStore = [];
-let rec1;
-let rec2;
+let recordingCams = [];
 let ClientAccessKey;
 
 async function setupAndRun() {
@@ -128,56 +127,48 @@ async function setupAndRun() {
   });
 
   async function recordCam() {
-    // Kids room
-    const HLSKidsRoomCam = await serviceHelper.vaultSecret(process.env.ENVIRONMENT, 'HLSKidsRoomCam');
-    const HLSKidsRoomRecord = await serviceHelper.vaultSecret(process.env.ENVIRONMENT, 'HLSKidsRoomRecord');
-    if (HLSKidsRoomCam instanceof Error || HLSKidsRoomRecord instanceof Error) {
-      serviceHelper.log('error', 'Not able to get secret (Kids room cam info) from vault');
+    serviceHelper.log('trace', 'Get webcam(s) settings');
+    let HLSCams = await serviceHelper.vaultSecret(process.env.ENVIRONMENT, 'HLSCam');
+    if (HLSCams instanceof Error) {
+      serviceHelper.log('error', 'Not able to get secret (Cam info) from vault');
       return;
     }
-    if (typeof rec1 === 'undefined' && HLSKidsRoomRecord === 'true') {
-      serviceHelper.log('info', 'Start recording kids room');
-      rec1 = new RTSPRecorder({
-        name: 'Kidsroom',
-        url: HLSKidsRoomCam,
-        type: 'record',
-        disableStreaming: false,
-        timeLimit: 600, // 10 minutes for each segmented video file
-      });
-      rec1.startRecording(); // Start Recording
-    }
-    if (typeof rec1 !== 'undefined' && HLSKidsRoomRecord === 'false') {
-      serviceHelper.log('info', 'Settings changed, stopping recording');
-      rec1.stopRecording(); // Stop Recording
-      rec1 = undefined; // Clear var
-    }
+    HLSCams = JSON.parse(HLSCams);
 
-    // Living room
-    const HLSLivingRoomCam = await serviceHelper.vaultSecret(process.env.ENVIRONMENT, 'HLSLivingRoomCam');
-    const HLSLivingRoomRecord = await serviceHelper.vaultSecret(process.env.ENVIRONMENT, 'HLSLivingRoomRecord');
-    if (HLSLivingRoomCam instanceof Error || HLSLivingRoomRecord instanceof Error) {
-      serviceHelper.log('error', 'Not able to get secret (Living room cam info) from vault');
-      return;
-    }
-    if (typeof rec2 === 'undefined' && HLSLivingRoomRecord === 'true') {
-      serviceHelper.log('info', 'Start recording living room');
-      rec2 = new RTSPRecorder({
-        name: 'Livingroom',
-        url: HLSLivingRoomCam,
-        type: 'record',
-        disableStreaming: false,
-        timeLimit: 600, // 10 minutes for each segmented video file
+    // Check for in progress recordings that need stopping
+    recordingCams
+      // eslint-disable-next-line max-len
+      .filter((recordingCam) => HLSCams.filter((cam) => cam.Record === 'false' && cam.Room === recordingCam.name).length === 1)
+      .map(async (recordingCam, index) => {
+        serviceHelper.log('info', `Settings changed, stop recording cam: ${recordingCam.name}`);
+        await recordingCam.stopRecording(); // Stop Recording
+        recordingCams.splice(index, 1);
+        return true;
       });
-      rec2.startRecording(); // Start Recording
-    }
-    if (typeof rec2 !== 'undefined' && HLSLivingRoomRecord === 'false') {
-      serviceHelper.log('info', 'Settings changed, stopping recording');
-      rec2.stopRecording(); // Stop Recording
-      rec2 = undefined; // Clear var
-    }
+
+    // Check for recordings that need start
+    const tempRecordingCams = HLSCams
+      // eslint-disable-next-line max-len
+      .filter((cam) => cam.Record === 'true' && recordingCams.filter((recordingCam) => recordingCam.name === cam.Room).length === 0)
+      .map((cam) => {
+        serviceHelper.log('info', `Settings changed, start recording cam: ${cam.Room}`);
+
+        const recRef = new RTSPRecorder({
+          name: `${cam.Room}`,
+          url: cam.CamURL,
+          type: 'record',
+          disableStreaming: false,
+          timeLimit: 600, // 10 minutes for each segmented video file
+        });
+        recRef.startRecording(); // Start Recording
+        return recRef;
+      });
+
+    // New recordong so add it to the recordings array
+    if (tempRecordingCams.length > 0) recordingCams = tempRecordingCams;
 
     // Check again in 5 minutes if settings are the same
-    const timerInterval = 5 * 60 * 1000; // 5 minutes
+    const timerInterval = 5 * 60 * 1000;
     setTimeout(() => {
       recordCam();
     }, timerInterval);

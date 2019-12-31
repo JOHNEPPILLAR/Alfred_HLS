@@ -93,10 +93,15 @@ const RTSPRecorder = class {
     if (this.writeStream) {
       this.killStream();
     }
+    serviceHelper.log(
+      'info',
+      `Stoped recording cam: ${this.name}`,
+    );
   }
 
-  startRecording() {
-    if (process.env.MOCK === 'true') {
+  async startRecording() {
+    const MOCK = await serviceHelper.vaultSecret(process.env.ENVIRONMENT, 'HLSMock');
+    if (MOCK === 'true') {
       serviceHelper.log(
         'trace',
         'Mock mode enabled, using test file as stream',
@@ -111,13 +116,13 @@ const RTSPRecorder = class {
     if (this.categoryType === 'record') {
       serviceHelper.log(
         'info',
-        `Starting to record to disk webcam stream: ${this.uuid.format()}`,
+        `Starting to record to disk cam: ${this.name}`,
       );
       this.createDirIfNotExists(this.getTodayPath());
     } else {
       serviceHelper.log(
         'info',
-        `Restreaming webcam stream: ${this.uuid.format()}`,
+        `Restreaming cam: ${this.name}`,
       );
     }
 
@@ -147,12 +152,9 @@ const RTSPRecorder = class {
     const self = this;
     if (this.timer) clearTimeout(this.timer);
     if (this.writeStream && this.writeStream.binded) return false;
-
     if (this.writeStream && this.writeStream.connected) {
       this.writeStream.binded = true;
-      this.writeStream.once('exit', () => {
-        self.recordStream();
-      });
+      this.writeStream.once('exit', () => self.recordStream());
       this.killStream();
       return false;
     }
