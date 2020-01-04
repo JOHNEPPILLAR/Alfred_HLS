@@ -73,7 +73,7 @@ const RTSPRecorder = class {
   getChildProcess(fileName) {
     const args = ['-i', this.url];
     const mediaArgs = this.getArguments();
-    mediaArgs.forEach((item) => args.push(item));
+    mediaArgs.map((item) => args.push(item));
     args.push(fileName);
 
     const child = childProcess.spawn('ffmpeg', args, {
