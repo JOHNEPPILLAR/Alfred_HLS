@@ -19,9 +19,13 @@ WORKDIR /home/nodejs/app
 
 COPY package*.json ./
 
+RUN chown node /home/nodejs/app
+
 RUN npm install
 
 COPY --chown=node:node . .
+
+RUN chown node /home/nodejs/app
 
 USER node
 

@@ -26,7 +26,7 @@ const RTSPRecorder = class {
 
   getDirectoryPath() {
     if (this.categoryType === 'stream') {
-      return this.folder;
+      return `${this.folder}stream/`;
     }
     return path.join(this.folder, this.name ? this.name : '');
   }

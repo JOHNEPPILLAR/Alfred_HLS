@@ -123,7 +123,7 @@ async function playStream(req, res, next) {
   const fileName = path.basename(req.url).split('?')[0];
   const fileExt = path.extname(req.url);
   const streamFolder = req.url.split('/')[3];
-  const filePath = `recordings/${streamFolder}/${fileName}`;
+  const filePath = `recordings/stream/${streamFolder}/${fileName}`;
 
   // Check if stream is ready
   fs.exists(filePath, async (exists) => {
