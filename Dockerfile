@@ -25,7 +25,7 @@ RUN npm install
 
 COPY --chown=node:node . .
 
-RUN chown node /home/nodejs/app
+RUN chown -R node /home/nodejs/app
 
 USER node
 
