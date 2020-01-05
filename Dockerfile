@@ -25,8 +25,7 @@ COPY --chown=node:node . .
 
 USER node
 
-RUN groupmod -g 500 node && usermod -u 500 node \
-	&& mkdir /home/nodejs/app/media/stream \
+RUN mkdir /home/nodejs/app/media/stream \
 	&& mkdir /home/nodejs/app/media/recordings
 
 HEALTHCHECK --start-period=60s --interval=10s --timeout=10s --retries=6 CMD ["./healthcheck.sh"]
