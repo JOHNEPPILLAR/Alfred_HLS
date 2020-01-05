@@ -25,9 +25,6 @@ COPY --chown=node:node . .
 
 USER node
 
-RUN mkdir /home/nodejs/app/media/stream \
-	&& mkdir /home/nodejs/app/media/recordings
-
 HEALTHCHECK --start-period=60s --interval=10s --timeout=10s --retries=6 CMD ["./healthcheck.sh"]
 
 EXPOSE 3978
