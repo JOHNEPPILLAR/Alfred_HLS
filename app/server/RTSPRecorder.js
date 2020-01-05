@@ -16,7 +16,7 @@ const RTSPRecorder = class {
     this.name = config.name;
     this.url = config.url;
     this.timeLimit = config.timeLimit || 60;
-    this.folder = 'recordings/';
+    this.folder = 'media/';
     this.categoryType = config.type || 'record';
     this.disableStreaming = config.disableStreaming;
     this.directoryPathFormat = config.directoryPathFormat || 'D-MMM-YYYY';
@@ -28,6 +28,10 @@ const RTSPRecorder = class {
     if (this.categoryType === 'stream') {
       return `${this.folder}stream/`;
     }
+    if (this.categoryType === 'record') {
+      return `${this.folder}recordings/`;
+    }
+
     return path.join(this.folder, this.name ? this.name : '');
   }
 

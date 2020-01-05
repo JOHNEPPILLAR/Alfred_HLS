@@ -23,9 +23,11 @@ RUN npm install
 
 COPY --chown=node:node . .
 
-RUN chown -R node:node /home/nodejs/app
-
 USER node
+
+RUN groupmod -g 500 node && usermod -u 500 node \
+	&& mkdir /home/nodejs/app/media/stream \
+	&& mkdir /home/nodejs/app/media/recordings
 
 HEALTHCHECK --start-period=60s --interval=10s --timeout=10s --retries=6 CMD ["./healthcheck.sh"]
 
