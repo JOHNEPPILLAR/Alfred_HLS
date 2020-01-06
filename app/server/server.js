@@ -6,6 +6,7 @@ require('dotenv').config();
 const serviceHelper = require('alfred-helper');
 const restify = require('restify');
 const UUID = require('pure-uuid');
+const path = require('path');
 const { version } = require('../../package.json');
 
 /**
@@ -82,7 +83,8 @@ async function setupAndRun() {
       );
       return;
     }
-    if (req.query.clientaccesskey !== ClientAccessKey) {
+    const fileExt = path.extname(req.url).toLowerCase();
+    if (req.query.clientaccesskey !== ClientAccessKey && fileExt !== '.ts') {
       serviceHelper.log(
         'warn',
         `Invaid client access key: ${req.headers.ClientAccessKey}`,
@@ -90,7 +92,7 @@ async function setupAndRun() {
       serviceHelper.sendResponse(
         res,
         401,
-        'There was a problem authenticating you',
+        'There was a problem authenticating you.',
       );
       return;
     }

@@ -25,13 +25,8 @@ const RTSPRecorder = class {
   }
 
   getDirectoryPath() {
-    if (this.categoryType === 'stream') {
-      return `${this.folder}stream/`;
-    }
-    if (this.categoryType === 'record') {
-      return `${this.folder}recordings/`;
-    }
-
+    if (this.categoryType === 'stream') return `${this.folder}stream/`;
+    if (this.categoryType === 'record') return `${this.folder}recordings/`;
     return path.join(this.folder, this.name ? this.name : '');
   }
 
@@ -43,34 +38,26 @@ const RTSPRecorder = class {
   }
 
   getMediaTypePath() {
-    if (this.categoryType === 'stream') {
-      return path.join(this.getDirectoryPath(), `${this.uuid}`);
-    }
+    if (this.categoryType === 'stream') return path.join(this.getDirectoryPath(), `${this.uuid}`);
     return this.getTodayPath();
   }
 
   getFilename(folderPath) {
-    if (this.categoryType === 'stream') {
-      return path.join(folderPath, 'cam.m3u8');
-    }
+    if (this.categoryType === 'stream') return path.join(folderPath, 'cam.m3u8');
     return path.join(folderPath, `${moment().format(this.fileNameFormat)}.mp4`);
   }
 
   // eslint-disable-next-line class-methods-use-this
   createDirIfNotExists(folderPath) {
     try {
-      if (!fs.lstatSync(folderPath).isDirectory()) {
-        fs.mkdirSync(folderPath);
-      }
+      if (!fs.lstatSync(folderPath).isDirectory()) fs.mkdirSync(folderPath);
     } catch (e) {
       fs.mkdirSync(folderPath);
     }
   }
 
   getArguments() {
-    if (this.categoryType === 'stream') {
-      return ['-f', 'hls', '-hls_time', 3, '-hls_wrap', 10];
-    }
+    if (this.categoryType === 'stream') return ['-f', 'hls', '-hls_time', 3, '-hls_wrap', 10];
     return ['-f', 'mp4']; // Default is record
   }
 
@@ -79,12 +66,7 @@ const RTSPRecorder = class {
     const mediaArgs = this.getArguments();
     mediaArgs.map((item) => args.push(item));
     args.push(fileName);
-
-    const child = childProcess.spawn('ffmpeg', args, {
-      detached: false,
-      stdio: 'ignore',
-    });
-
+    const child = childProcess.spawn('ffmpeg', args);
     return child;
   }
 

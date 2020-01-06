@@ -11,6 +11,7 @@ const serviceHelper = require('alfred-helper');
  * Import helper libraries
  */
 const RTSPRecorder = require('../../../app/server/RTSPRecorder.js');
+const Arlo = require('../../../app/server/arlo.js');
 
 const skill = new Skills();
 const CONTENT_TYPE = {
@@ -40,22 +41,52 @@ const CONTENT_TYPE = {
 async function startStream(req, res, next) {
   serviceHelper.log('trace', `Start stream API called for url: ${req.url}`);
   const { CamRoom } = req.params;
-  const HLSCam = await serviceHelper.vaultSecret(process.env.ENVIRONMENT, `HLS${CamRoom}RoomCam`);
-  const HLSCamRecord = await serviceHelper.vaultSecret(process.env.ENVIRONMENT, `HLS${CamRoom}RoomRecord`);
-  if (HLSCam instanceof Error || HLSCamRecord instanceof Error) {
-    serviceHelper.log('error', 'Not able to get secret (CAM Info) from vault');
-    return;
-  }
 
-  const rec = new RTSPRecorder({
-    url: HLSCam,
-    type: 'stream',
-    disableStreaming: true,
-    timeLimit: 600, // 10 minutes for each segmented video file
-  });
-  const streamUUID = rec.startRecording(); // Start Recording
-  serviceHelper.sendResponse(res, 200, streamUUID);
-  next();
+  let HLSCamURL;
+  let HLSCams;
+  let camName;
+
+  try {
+    switch (CamRoom) {
+      case 'Garden':
+      case 'Living':
+        // eslint-disable-next-line no-case-declarations
+        const arlo = new Arlo();
+        // eslint-disable-next-line no-case-declarations
+        const HLSCamData = await arlo.getCamInfo(CamRoom);
+        if (HLSCamData instanceof Error) throw new Error(HLSCamData.message);
+        HLSCamURL = HLSCamData.camURL;
+        camName = HLSCamData.camName;
+        break;
+      case 'Kids':
+        camName = `${CamRoom} Room`;
+        HLSCams = await serviceHelper.vaultSecret(process.env.ENVIRONMENT, 'HLSCam');
+        if (HLSCamURL instanceof Error) throw new Error('Not able to get secret (CAM Info) from vault');
+        // eslint-disable-next-line no-case-declarations
+        let HLSCam = JSON.parse(HLSCams);
+        HLSCam = HLSCam.filter((cam) => cam.Room === CamRoom);
+        HLSCamURL = HLSCam[0].CamURL;
+        break;
+      default:
+        serviceHelper.log('error', `Not able to match device: ${CamRoom}`);
+        throw new Error(`Not able to match device: ${CamRoom}`);
+    }
+
+    const rec = new RTSPRecorder({
+      name: camName,
+      url: HLSCamURL,
+      type: 'stream',
+      disableStreaming: true,
+      timeLimit: 600, // 10 minutes for each segmented video file
+    });
+    const streamUUID = await rec.startRecording(); // Start Recording
+    serviceHelper.sendResponse(res, 200, streamUUID);
+    next();
+  } catch (err) {
+    serviceHelper.log('error', err.message);
+    serviceHelper.sendResponse(res, 500, err);
+    next();
+  }
 }
 skill.get('/start/:CamRoom', startStream);
 
@@ -123,7 +154,7 @@ async function playStream(req, res, next) {
   const fileName = path.basename(req.url).split('?')[0];
   const fileExt = path.extname(req.url);
   const streamFolder = req.url.split('/')[3];
-  const filePath = `recordings/stream/${streamFolder}/${fileName}`;
+  const filePath = `media/stream/${streamFolder}/${fileName}`;
 
   // Check if stream is ready
   fs.exists(filePath, async (exists) => {
