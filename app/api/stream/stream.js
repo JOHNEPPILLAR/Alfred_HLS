@@ -11,7 +11,7 @@ const serviceHelper = require('alfred-helper');
  * Import helper libraries
  */
 const RTSPRecorder = require('../../../app/server/RTSPRecorder.js');
-const Arlo = require('../../../app/server/arlo.js');
+const Arlo = require('../../server/arlo.js');
 
 const skill = new Skills();
 const CONTENT_TYPE = {
@@ -53,10 +53,10 @@ async function startStream(req, res, next) {
         // eslint-disable-next-line no-case-declarations
         const arlo = new Arlo();
         // eslint-disable-next-line no-case-declarations
-        const HLSCamData = await arlo.getCamInfo(CamRoom);
+        const HLSCamData = await arlo.getCamStream(CamRoom);
         if (HLSCamData instanceof Error) throw new Error(HLSCamData.message);
         HLSCamURL = HLSCamData.camURL;
-        camName = HLSCamData.camName;
+        camName = HLSCamData.name;
         break;
       case 'Kids':
         camName = `${CamRoom} Room`;

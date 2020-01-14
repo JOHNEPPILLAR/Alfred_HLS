@@ -12,6 +12,7 @@ const { version } = require('../../package.json');
 /**
  * Import helper libraries
  */
+const devices = require('../collectors/controller.js');
 const RTSPRecorder = require('./RTSPRecorder.js');
 const APIroot = require('../api/root/root.js');
 const APIstream = require('../api/stream/stream.js');
@@ -180,6 +181,7 @@ async function setupAndRun() {
   server.listen(process.env.PORT, async () => {
     serviceHelper.log('info', `${process.env.VIRTUAL_HOST} has started`);
     recordCam();
+    await devices.processArloDevices(); // Collect cam data
   });
 }
 
