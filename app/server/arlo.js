@@ -209,6 +209,7 @@ const Arlo = class {
         let str;
         let msg;
         try {
+          // HACK as eventStream is missing these messages !?!
           str = data.toString();
           jsonStr = `{${str.toString().replace(/^event: message\s*data/, '"event": "message", "data"')}}`;
 
@@ -225,8 +226,10 @@ const Arlo = class {
             startPoint = jsonStr.indexOf('batteryLevel') + 14;
             const batteryLevel = jsonStr.slice(startPoint, startPoint + 2);
             msg = { event: 'message', data: { deviceId, signalStrength, batteryLevel } };
-          } else {
+          } else if (!jsonStr.includes('bestLocalLiveStreaming')) {
             msg = JSON.parse(jsonStr);
+          } else {
+            return;
           }
 
           const dataStream = msg.data;
@@ -237,6 +240,7 @@ const Arlo = class {
 
           if (dataStream.batteryLevel) {
             serviceHelper.log('trace', 'Processing camera properities');
+            serviceHelper.log('trace', JSON.stringify(dataStream));
             camCounter += 1;
             if (camCounter === 2) this.unSubscribeFromEvents();
             let camInfo;
