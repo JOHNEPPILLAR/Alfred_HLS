@@ -1,7 +1,6 @@
 /**
  * Import external libraries
  */
-require('dotenv').config();
 const serviceHelper = require('alfred-helper');
 const rp = require('request-promise');
 const logger = require('pino')();
@@ -10,9 +9,7 @@ const options = {
   method: 'GET',
   timeout: 5000,
   json: true,
-  agentOptions: {
-    rejectUnauthorized: false,
-  },
+  agentOptions: { rejectUnauthorized: false },
 };
 
 async function pingApp() {
