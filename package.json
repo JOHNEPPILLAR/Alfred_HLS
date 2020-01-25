@@ -22,7 +22,7 @@
     "path": "^0.12.7",
     "pino": "^5.16.0",
     "pino-pretty": "^3.5.0",
-    "pure-uuid": "^1.5.8",
+    "pure-uuid": "^1.6.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.5",
     "restify": "^8.5.1",
@@ -35,6 +35,6 @@
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.20.0",
-    "snyk": "^1.278.1"
+    "snyk": "^1.280.0"
   }
 }

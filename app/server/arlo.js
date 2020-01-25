@@ -126,24 +126,24 @@ const Arlo = class {
     return returnData;
   }
 
-  async registerCamForEvents(cam) {
+  async registerCamForEvents(baseStation) {
     try {
       delete this.headers.Accept;
-      this.headers.xcloudId = cam.xCloudId;
+      this.headers.xcloudId = baseStation.xCloudId;
       const options = {
         method: 'POST',
-        uri: `https://my.arlo.com/hmsweb/users/devices/notify/${cam.parentId}`,
+        uri: `https://my.arlo.com/hmsweb/users/devices/notify/${baseStation.deviceId}`,
         json: true,
         jar: true,
         headers: this.headers,
         body: {
-          to: cam.parentId,
+          to: baseStation.deviceId,
           resource: `subscriptions/${this.userId}_web`,
           publishResponse: false,
           action: 'set',
           from: `${this.userId}_web`,
-          transId: `web!${cam.xCloudId}`,
-          properties: { devices: [cam.parentId] },
+          transId: `web!${baseStation.xCloudId}`,
+          properties: { devices: [baseStation.deviceId] },
         },
       };
       https(
@@ -157,17 +157,17 @@ const Arlo = class {
         },
         (error, response, body) => {
           if (error) serviceHelper.log('error', error.message);
-          if (!body || body.success !== true) throw new Error(`Not able register device ${cam.deviceName} for events`);
+          if (!body || body.success !== true) throw new Error(`Not able register device ${baseStation.deviceName} for events`);
         },
       );
-      options.uri = `https://my.arlo.com/hmsweb/users/devices/notify/${cam.parentId}`;
+      options.uri = `https://my.arlo.com/hmsweb/users/devices/notify/${baseStation.deviceId}`;
       options.body = {
-        to: cam.parentId,
+        to: baseStation.deviceId,
         resource: 'cameras',
         publishResponse: false,
         action: 'get',
         from: `${this.userId}_web`,
-        transId: `web!${cam.xCloudId}`,
+        transId: `web!${baseStation.xCloudId}`,
         properties: {},
       };
       https(
@@ -181,8 +181,8 @@ const Arlo = class {
         },
         (error, response, body) => {
           if (error) serviceHelper.log('error', error.message);
-          if (!body || body.success !== true) throw new Error(`Not able register device ${cam.deviceName} for events`);
-          if (body.success === true) serviceHelper.log('trace', `Requested events for device: ${cam.deviceName}`);
+          if (!body || body.success !== true) throw new Error(`Not able register device ${baseStation.deviceName} for events`);
+          if (body.success === true) serviceHelper.log('trace', `Requested events for device: ${baseStation.deviceName}`);
         },
       );
       return true;
@@ -192,9 +192,59 @@ const Arlo = class {
     }
   }
 
-  subscribeToEvents(camsToProcessEvents) {
-    let jsonStr;
-    this.headers.Accept = 'text/event-stream';
+  saveCamProperties(prop) {
+    let deviceName = '';
+    switch (prop.serialNumber) {
+      case '5GG28C7XA992D':
+        deviceName = 'Garden';
+        break;
+      case '5GG28C78AA4F8':
+        deviceName = 'Living Room';
+        break;
+      default:
+    }
+    const SQL = 'INSERT INTO camera("time", deviceID, deviceName, signalStrength, batteryLevel) VALUES ($1, $2, $3, $4, $5)';
+    const SQLValues = [
+      new Date(),
+      prop.serialNumber,
+      deviceName,
+      prop.signalStrength,
+      prop.batteryLevel,
+    ];
+    (async () => {
+      try {
+        serviceHelper.log('trace', 'Connect to data store connection pool');
+        const dbConnection = await serviceHelper.connectToDB('arlo');
+        serviceHelper.log('trace', `Save camera values for device: ${SQLValues[2]}`);
+        const results = await dbConnection.query(SQL, SQLValues);
+        serviceHelper.log(
+          'trace',
+          'Release the data store connection back to the pool',
+        );
+        await dbConnection.end(); // Close data store connection
+        if (results.rowCount !== 1) {
+          serviceHelper.log('error', `Failed to insert data for camera: ${SQLValues[2]}`);
+        } else {
+          serviceHelper.log('info', `Saved data for camera: ${SQLValues[2]}`);
+        }
+      } catch (err) {
+        serviceHelper.log('error', err.message);
+      }
+    })();
+    this.returnValue = true;
+  }
+
+  subscribeToEvents(baseStation) {
+    const bom = [239, 187, 191];
+    const colon = 58;
+    const space = 32;
+    const lineFeed = 10;
+    const carriageReturn = 13;
+    function hasBom(buf) {
+      return bom.every((charCode, index) => buf[index] === charCode);
+    }
+
+    // let jsonStr;
     const options = {
       method: 'POST',
       uri: `https://my.arlo.com/hmsweb/client/subscribe?token=${this.token}`,
@@ -202,89 +252,84 @@ const Arlo = class {
       jar: true,
       headers: this.headers,
     };
-    let camCounter = 0;
+    let discardTrailingNewline = false;
+    let isFirst = true;
+    let buf;
     https
       .get(options)
-      .on('data', (data) => {
-        let str;
-        let msg;
+      .on('data', (chunk) => {
         try {
-          // HACK as eventStream is missing these messages !?!
-          str = data.toString();
-          jsonStr = `{${str.toString().replace(/^event: message\s*data/, '"event": "message", "data"')}}`;
+          buf = buf ? Buffer.concat([buf, chunk]) : chunk;
+          if (isFirst && hasBom(buf)) buf = buf.slice(bom.length);
+          isFirst = false;
+          const { length } = buf;
+          let pos = 0;
 
-          if (jsonStr.includes('batteryLevel')) {
-            // serialNumber
-            let startPoint = jsonStr.indexOf('serialNumber') + 15;
-            const deviceId = jsonStr.slice(startPoint, startPoint + 13);
-
-            // signalStrength
-            startPoint = jsonStr.indexOf('signalStrength') + 16;
-            const signalStrength = jsonStr.slice(startPoint, startPoint + 1);
-
-            // batteryLevel
-            startPoint = jsonStr.indexOf('batteryLevel') + 14;
-            const batteryLevel = jsonStr.slice(startPoint, startPoint + 2);
-            msg = { event: 'message', data: { deviceId, signalStrength, batteryLevel } };
-          } else if (!jsonStr.includes('bestLocalLiveStreaming')) {
-            msg = JSON.parse(jsonStr);
-          } else {
-            return;
-          }
-
-          const dataStream = msg.data;
-          if (dataStream.status === 'connected') {
-            serviceHelper.log('trace', 'Connected to base station event streams');
-            this.registerCamForEvents(camsToProcessEvents[0]);
-          }
-
-          if (dataStream.batteryLevel) {
-            serviceHelper.log('trace', 'Processing camera properities');
-            serviceHelper.log('trace', JSON.stringify(dataStream));
-            camCounter += 1;
-            if (camCounter === 2) this.unSubscribeFromEvents();
-            let camInfo;
-            try {
-              // eslint-disable-next-line max-len
-              camInfo = camsToProcessEvents.filter((device) => device.deviceId === dataStream.deviceId);
-            } catch (err) {
-              serviceHelper.log('error', 'Not able to get and save cam details');
-              return;
+          while (pos < length) {
+            if (discardTrailingNewline) {
+              if (buf[pos] === lineFeed) pos += 1;
+              discardTrailingNewline = false;
             }
-            const { deviceName } = camInfo[0];
-            const SQL = 'INSERT INTO camera("time", deviceID, deviceName, signalStrength, batteryLevel) VALUES ($1, $2, $3, $4, $5)';
-            const SQLValues = [
-              new Date(),
-              dataStream.deviceId,
-              deviceName,
-              dataStream.signalStrength,
-              dataStream.batteryLevel,
-            ];
-            (async () => {
-              try {
-                serviceHelper.log('trace', 'Connect to data store connection pool');
-                const dbConnection = await serviceHelper.connectToDB('arlo');
-                serviceHelper.log('trace', `Save camera values for device: ${SQLValues[2]}`);
-                const results = await dbConnection.query(SQL, SQLValues);
-                serviceHelper.log(
-                  'trace',
-                  'Release the data store connection back to the pool',
-                );
-                await dbConnection.end(); // Close data store connection
-                if (results.rowCount !== 1) {
-                  serviceHelper.log('error', `Failed to insert data for camera: ${SQLValues[2]}`);
-                } else {
-                  serviceHelper.log('info', `Saved data for camera: ${SQLValues[2]}`);
-                }
-              } catch (err) {
-                serviceHelper.log('error', err.message);
+
+            let lineLength = -1;
+            let fieldLength = -1;
+            let c;
+
+            for (let i = pos; lineLength < 0 && i < length; i += 1) {
+              c = buf[i];
+              if (c === colon) {
+                if (fieldLength < 0) fieldLength = i - pos;
+              } else if (c === carriageReturn) {
+                discardTrailingNewline = true;
+                lineLength = i - pos;
+              } else if (c === lineFeed) lineLength = i - pos;
+            }
+
+            if (lineLength < 0) break;
+            if (lineLength !== 0 && fieldLength > 0) {
+              const noValue = fieldLength < 0;
+              const field = buf.slice(pos, pos + (noValue ? lineLength : fieldLength)).toString();
+              let step = 0;
+              if (noValue) {
+                step = lineLength;
+              } else if (buf[pos + fieldLength + 1] !== space) {
+                step = fieldLength + 1;
+              } else {
+                step = fieldLength + 2;
               }
-            })();
+              pos += step;
+
+              const valueLength = lineLength - step;
+              const value = buf.slice(pos, pos + valueLength).toString();
+              let eventData;
+
+              switch (field) {
+                case '"status"':
+                  eventData = `${value.slice(1, -2)}`;
+                  if (eventData === 'connected') {
+                    serviceHelper.log('trace', 'Connected to event stream');
+                    this.registerCamForEvents(baseStation);
+                  }
+                  break;
+                case '"resource"':
+                  serviceHelper.log('trace', 'Got cam resources');
+                  eventData = JSON.parse(`{${value.slice(10)}`);
+                  eventData.properties.map((prop) => {
+                    this.saveCamProperties(prop);
+                    return true;
+                  });
+                  this.unSubscribeFromEvents();
+                  break;
+                default:
+              }
+            }
+            pos += lineLength + 1;
           }
 
-          if (dataStream.action === 'logout') {
-            serviceHelper.log('info', 'Logged out by some other entity.');
-            this.connected = false;
+          if (pos === length) {
+            buf = undefined;
+          } else if (pos > 0) {
+            buf = buf.slice(pos);
           }
         } catch (err) {
           serviceHelper.log('error', err.message);
@@ -312,32 +357,17 @@ const Arlo = class {
     }
   }
 
-  getCamIDs() {
-    const camNames = ['Garden', 'Living'];
-    this.returnVal = Promise.all(
-      camNames.map(async (camName) => {
-        const camID = await serviceHelper.vaultSecret(process.env.ENVIRONMENT, `ArloCam${camName}`);
-        return camID;
-      }),
-    );
-    return this.returnVal;
-  }
-
   async getBatteryStatus() {
     const returnFromLogin = await this.login();
     if (returnFromLogin instanceof Error) return returnFromLogin;
     const devices = await this.getDevices();
     if (devices instanceof Error) return devices;
-
-    const cams = await this.getCamIDs();
-    if (cams.length === 0) {
+    const baseStation = devices.data.filter((device) => device.deviceType === 'basestation');
+    if (baseStation.length === 0) {
       serviceHelper.log('error', 'No cams to bind battery events to');
       return new Error('No cams to bind battery events to');
     }
-    // eslint-disable-next-line max-len
-    const camsToProcessEvents = devices.data.filter((device) => cams.indexOf(device.deviceId) !== -1);
-    this.subscribeToEvents(camsToProcessEvents);
-
+    this.subscribeToEvents(baseStation[0]);
     return true;
   }
 };
