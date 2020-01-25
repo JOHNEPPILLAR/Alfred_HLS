@@ -302,6 +302,7 @@ const Arlo = class {
               const valueLength = lineLength - step;
               const value = buf.slice(pos, pos + valueLength).toString();
               let eventData;
+              let tmpValue;
 
               switch (field) {
                 case '"status"':
@@ -312,13 +313,19 @@ const Arlo = class {
                   }
                   break;
                 case '"resource"':
-                  serviceHelper.log('trace', 'Got cam resources');
-                  eventData = JSON.parse(`{${value.slice(10)}`);
-                  eventData.properties.map((prop) => {
-                    this.saveCamProperties(prop);
-                    return true;
-                  });
-                  this.unSubscribeFromEvents();
+                  try {
+                    serviceHelper.log('trace', 'Got cam resources');
+                    tmpValue = `{${value.slice(10)}`;
+                    eventData = JSON.parse(tmpValue);
+                    eventData.properties.map((prop) => {
+                      this.saveCamProperties(prop);
+                      return true;
+                    });
+                    this.unSubscribeFromEvents();
+                  } catch (err) {
+                    serviceHelper.log('error', err.message);
+                    serviceHelper.log('error', tmpValue);
+                  }
                   break;
                 default:
               }
