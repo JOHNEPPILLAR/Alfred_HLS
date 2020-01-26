@@ -314,14 +314,16 @@ const Arlo = class {
                   break;
                 case '"resource"':
                   try {
-                    serviceHelper.log('trace', 'Got cam resources');
-                    tmpValue = `{${value.slice(10)}`;
-                    eventData = JSON.parse(tmpValue);
-                    eventData.properties.map((prop) => {
-                      this.saveCamProperties(prop);
-                      return true;
-                    });
-                    this.unSubscribeFromEvents();
+                    if (value.slice(0, 9) === '"cameras"') {
+                      serviceHelper.log('trace', 'Got cam resources');
+                      tmpValue = `{${value.slice(10)}`;
+                      eventData = JSON.parse(tmpValue);
+                      eventData.properties.map((prop) => {
+                        this.saveCamProperties(prop);
+                        return true;
+                      });
+                      this.unSubscribeFromEvents();
+                    }
                   } catch (err) {
                     serviceHelper.log('error', err.message);
                     serviceHelper.log('error', tmpValue);
