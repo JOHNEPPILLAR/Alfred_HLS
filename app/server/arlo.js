@@ -379,6 +379,49 @@ const Arlo = class {
     this.subscribeToEvents(baseStation[0]);
     return true;
   }
+
+  async turnOffCam(action) {
+    // action: True - Camera is off.
+    // action: False - Camera is on.
+
+    const returnFromLogin = await this.login();
+    if (returnFromLogin instanceof Error) return returnFromLogin;
+    const devices = await this.getDevices();
+    if (devices instanceof Error) return devices;
+    const baseStation = devices.data.filter((device) => device.deviceType === 'basestation');
+    const livingRoomCam = devices.data.filter((device) => device.deviceName === 'Living Room');
+    if (baseStation.length === 0) {
+      serviceHelper.log('error', 'No cams to bind battery events to');
+      return new Error('No cams to bind battery events to');
+    }
+    this.headers.xcloudId = baseStation[0].xCloudId;
+    const options = {
+      method: 'POST',
+      uri: `https://my.arlo.com/hmsweb/users/devices/notify/${baseStation[0].deviceId}`,
+      json: true,
+      jar: true,
+      headers: this.headers,
+      body: {
+        from: `${this.userId}_web`,
+        to: baseStation[0].deviceId,
+        action: 'set',
+        resource: `cameras/${livingRoomCam[0].deviceId}`,
+        publishResponse: true,
+        transId: this.transId,
+        properties: { privacyActive: action },
+      },
+    };
+    try {
+      const apiData = await rp(options);
+      if (!apiData || apiData.success !== true) throw new Error('Error in turning can on/off');
+      if (action) serviceHelper.log('info', 'Turned off cam');
+      if (!action) serviceHelper.log('info', 'Turned on cam');
+      return apiData;
+    } catch (err) {
+      serviceHelper.log('error', err.message);
+      return err;
+    }
+  }
 };
 
 module.exports = Arlo;

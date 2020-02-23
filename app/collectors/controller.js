@@ -9,19 +9,15 @@ const serviceHelper = require('alfred-helper');
 const Arlo = require('../server/arlo.js');
 
 const arlo = new Arlo();
-const timerInterval = 15 * 60 * 1000; // 15 minutes
-
-async function getCamData() {
-  await arlo.getBatteryStatus();
-}
+const batteryTimerInterval = 15 * 60 * 1000; // 15 minutes
 
 exports.processArloDevices = async function fnprocessArloDevices() {
   try {
-    await getCamData();
+    await arlo.getBatteryStatus();
   } catch (err) {
     serviceHelper.log('error', err.message);
   }
   setTimeout(() => {
     fnprocessArloDevices();
-  }, timerInterval);
+  }, batteryTimerInterval);
 };

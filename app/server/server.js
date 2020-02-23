@@ -13,12 +13,14 @@ const virtualHost = require('../../package.json').name;
  * Import helper libraries
  */
 const devices = require('../collectors/controller.js');
+const schedules = require('../schedules/controller.js');
 const RTSPRecorder = require('./RTSPRecorder.js');
 const APIroot = require('../api/root/root.js');
 const APIstream = require('../api/stream/stream.js');
 
 global.APITraceID = '';
 global.streamsStore = [];
+global.schedules = [];
 let recordingCams = [];
 let ClientAccessKey;
 
@@ -180,8 +182,9 @@ async function setupAndRun() {
   // Start service and listen to requests
   server.listen(process.env.PORT, async () => {
     serviceHelper.log('info', `${serviceName} has started`);
-    recordCam();
-    await devices.processArloDevices(); // Collect cam data
+    // recordCam();
+    // await devices.processArloDevices(); // Collect cam data
+    await schedules.setSchedule(); // Setup schedules
   });
 }
 
