@@ -36,7 +36,7 @@ async function setupSchedules() {
   // Turn off cam each evening
   const kidsAtHomeToday = await serviceHelper.kidsAtHomeToday();
   if (kidsAtHomeToday) {
-    date.setHours(3);
+    date.setHours(15);
     date.setMinutes(0);
   } else {
     date.setHours(18);
@@ -46,7 +46,7 @@ async function setupSchedules() {
   global.schedules.push(schedule);
   serviceHelper.log(
     'info',
-    `Livingroon cam on at ${dateformat(date, 'dd-mm-yyyy @ HH:MM')}`,
+    `Livingroon cam off at ${dateformat(date, 'dd-mm-yyyy @ HH:MM')}`,
   );
 }
 
