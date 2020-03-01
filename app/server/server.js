@@ -182,9 +182,9 @@ async function setupAndRun() {
   // Start service and listen to requests
   server.listen(process.env.PORT, async () => {
     serviceHelper.log('info', `${serviceName} has started`);
-    // recordCam();
-    // await devices.processArloDevices(); // Collect cam data
-    await schedules.setSchedule(); // Setup schedules
+    recordCam();
+    devices.processArloDevices(); // Collect cam data
+    schedules.setSchedule(); // Setup schedules
   });
 }
 
