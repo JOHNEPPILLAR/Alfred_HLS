@@ -3,7 +3,6 @@
  */
 const serviceHelper = require('alfred-helper');
 const rp = require('request-promise');
-const logger = require('pino')();
 
 const options = {
   method: 'GET',
@@ -19,7 +18,7 @@ async function pingApp() {
     await rp(options);
     process.exit(0);
   } catch (err) {
-    logger.error(`Docker healthcheck - ${err.message}`);
+    serviceHelper.log('error', `Docker healthcheck - ${err.message}`);
     process.exit(1);
   }
 }
