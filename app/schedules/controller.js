@@ -14,9 +14,16 @@ async function setupSchedules() {
   // If weekend do not set schedules
   const bankHolidayOrWeekend = await serviceHelper.checkForBankHolidayWeekend();
   if (bankHolidayOrWeekend instanceof Error) return;
-
   if (bankHolidayOrWeekend) {
     serviceHelper.log('info', 'Not setting schedule as it\'s the weekend or a bank holiday');
+    return;
+  }
+
+  // If working from home do not set schedules
+  const workingFromHome = await serviceHelper.workingFromHomeToday();
+  if (workingFromHome instanceof Error) return;
+  if (workingFromHome) {
+    serviceHelper.log('info', 'Not setting schedule as working from home');
     return;
   }
 
