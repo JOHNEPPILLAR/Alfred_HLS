@@ -35,8 +35,5 @@
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.1",
     "snyk": "^1.298.1"
-  },
-  "resolutions": {
-    "minimist": "1.2.2"
   }
 }
