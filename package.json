@@ -4,10 +4,10 @@
   "description": "Alfred HLS Media Streaming Service",
   "license": "MIT",
   "snyk": true,
-  "main": "app/server/server.js",
+  "main": "lib/server/server.js",
   "scripts": {
-    "start": "node app/server/server.js",
-    "local": "nodemon app/server/server.js",
+    "start": "node lib/server/server.js",
+    "local": "nodemon lib/server/server.js",
     "snyk-protect": "snyk protect",
     "prepare": "npm run snyk-protect",
     "test": "snyk test"
@@ -34,7 +34,7 @@
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
-    "eslint-plugin-import": "^2.20.1",
-    "snyk": "^1.305.0"
+    "eslint-plugin-import": "^2.20.2",
+    "snyk": "^1.305.1"
   }
 }
