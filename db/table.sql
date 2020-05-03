@@ -5,3 +5,5 @@ CREATE TABLE camera (
   signalStrength            INT               NOT NULL,
   batteryLevel              INT               NOT NULL
 )
+
+SELECT create_hypertable('camera', 'time')
