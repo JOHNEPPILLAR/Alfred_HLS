@@ -1,8 +1,10 @@
 FROM node:14-alpine
 
-RUN ln -snf /usr/share/zoneinfo/Europe/London /etc/localtime && echo Europe/London > /etc/timezone \
-	&& mkdir -p /home/nodejs/app \
-	&& apk --no-cache --virtual build-dependencies add \
+ENV TZ=Europe/London
+
+RUN mkdir -p /home/nodejs/app \
+	&& apk --no-cache --virtual build-dependencies --update add \
+	tzdata \
 	git \ 
 	g++ \
 	gcc \
@@ -12,7 +14,11 @@ RUN ln -snf /usr/share/zoneinfo/Europe/London /etc/localtime && echo Europe/Lond
 	make \
 	python \
 	ffmpeg \
+	curl \
 	&& npm install --quiet node-gyp -g \
+	&& ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
+	&& echo $TZ > /etc/timezone \
+	&& apk del tzdata \
 	&& rm -rf /var/cache/apk/*
 
 WORKDIR /home/nodejs/app
