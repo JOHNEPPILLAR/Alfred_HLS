@@ -1,6 +1,6 @@
 {
   "name": "alfred_hls_service",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "description": "Alfred HLS Media Streaming Service",
   "license": "MIT",
   "snyk": true,
