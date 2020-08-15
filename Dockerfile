@@ -30,6 +30,8 @@ RUN npm install
 
 COPY --chown=node:node . .
 
+RUN chown node /home/nodejs/app/media
+
 USER node
 
 HEALTHCHECK --start-period=60s --interval=10s --timeout=10s --retries=6 CMD ["./healthcheck.sh"]
