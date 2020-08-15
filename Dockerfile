@@ -20,8 +20,7 @@ RUN mkdir -p /home/nodejs/app \
 	&& ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
 	&& echo $TZ > /etc/timezone \
 	&& apk del tzdata \
-	&& rm -rf /var/cache/apk/* \
-	&& adduser node
+	&& rm -rf /var/cache/apk/*
 
 WORKDIR /home/nodejs/app
 
