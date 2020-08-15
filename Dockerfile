@@ -21,7 +21,7 @@ RUN mkdir -p /home/nodejs/app \
 	&& echo $TZ > /etc/timezone \
 	&& apk del tzdata \
 	&& rm -rf /var/cache/apk/* \
-	&& useradd node
+	&& adduser node
 
 WORKDIR /home/nodejs/app
 
