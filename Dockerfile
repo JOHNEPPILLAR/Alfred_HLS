@@ -20,7 +20,8 @@ RUN mkdir -p /home/nodejs/app \
 	&& ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
 	&& echo $TZ > /etc/timezone \
 	&& apk del tzdata \
-	&& rm -rf /var/cache/apk/*
+	&& rm -rf /var/cache/apk/* \
+	&& useradd node
 
 WORKDIR /home/nodejs/app
 
@@ -30,7 +31,7 @@ RUN npm install
 
 COPY --chown=node:node . .
 
-RUN chown node /home/nodejs/app/media
+RUN chown -R node:node /home/nodejs/app
 
 USER node
 
