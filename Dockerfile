@@ -3,6 +3,7 @@ FROM node:14-alpine
 ENV TZ=Europe/London
 
 RUN mkdir -p /home/nodejs/app \
+	&& mkdir -p /home/nodejs/app/media \
 	&& apk --no-cache --virtual build-dependencies --update add \
 	tzdata \
 	git \ 
