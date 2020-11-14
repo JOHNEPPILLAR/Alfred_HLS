@@ -8,8 +8,6 @@
   "scripts": {
     "start": "node lib/server/server.js",
     "local": "nodemon lib/server/server.js",
-    "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect",
     "test": "snyk test"
   },
   "author": "JP",
@@ -24,7 +22,7 @@
     "path": "^0.12.7",
     "pure-uuid": "^1.6.1",
     "request": "^2.88.2",
-    "snyk": "^1.424.4"
+    "snyk": "^1.426.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
