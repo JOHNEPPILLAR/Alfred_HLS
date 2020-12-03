@@ -3,6 +3,7 @@ clear
 
 APP_NAME=$(jq -r .name package.json)_role
 export PORT=3978
+#export DEBUG="*Arlo:*"
 
 echo "The following node processes were found and will be killed:"
 lsof -i :$PORT
