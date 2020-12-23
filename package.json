@@ -3,38 +3,37 @@
   "version": "4.2.7",
   "description": "Alfred HLS Media Streaming Service",
   "license": "MIT",
-  "snyk": true,
   "main": "lib/server/server.js",
   "scripts": {
     "start": "node lib/server/server.js",
-    "local": "nodemon lib/server/server.js",
-    "test": "snyk test"
+    "local": "nodemon lib/server/server.js"
   },
   "author": "JP",
   "dependencies": {
     "alfred-base": "git://github.com/johneppillar/alfred_base_service",
     "alfred-helper": "git://github.com/johneppillar/alfred_helper",
-    "axios": "^0.21.0",
+    "arlo": "git://github.com/johneppillar/arlo",
+    "axios": "^0.21.1",
     "child_process": "^1.0.2",
-    "dateformat": "^4.3.1",
+    "dateformat": "^4.4.0",
+    "debug": "4.3.1",
     "dotenv": "^8.2.0",
     "fs": "^0.0.2",
-    "node-arlo": "git://github.com/johneppillar/node-arlo",
     "path": "^0.12.7",
-    "pino": "^6.7.0",
-    "pure-uuid": "^1.6.1",
-    "snyk": "^1.434.2"
+    "pino": "^6.8.0",
+    "pure-uuid": "^1.6.1"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.15.0",
+    "eslint": "^7.16.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-config-prettier": "^7.0.0",
+    "eslint-config-prettier": "^7.1.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-prettier": "^3.2.0",
+    "eslint-plugin-prettier": "^3.3.0",
     "eslint-plugin-react": "^7.21.5",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "snyk": "^1.437.2"
   }
 }
