@@ -20,7 +20,7 @@
     "dotenv": "^8.2.0",
     "fs": "^0.0.2",
     "path": "^0.12.7",
-    "pino": "^6.8.0",
+    "pino": "^6.9.0",
     "pure-uuid": "^1.6.1"
   },
   "devDependencies": {
