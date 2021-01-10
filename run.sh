@@ -42,7 +42,7 @@ VAULES=$(vault write -f --format=json -address=$VAULT_URL auth/approle/role/$APP
 APP_TOKEN=$(echo $VAULES | jq .data.secret_id)
 export APP_TOKEN=${APP_TOKEN:1:${#APP_TOKEN}-2}
 
-export DEBUG="HLS:*"
+export DEBUG="HLS:*,Arlo:*"
 
 echo "Run the server"
 npm run local
