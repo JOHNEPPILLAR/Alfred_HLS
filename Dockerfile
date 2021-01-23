@@ -28,6 +28,7 @@ ENV TZ=Europe/London
 RUN mkdir -p /home/nodejs/app \
 	&& mkdir -p /home/nodejs/app/node_modules \
 	&& mkdir -p /home/nodejs/app/media \
+	&& mkdir -p /home/nodejs/app/tmp \
 	&& apk add --no-cache --virtual \
 	tzdata \
 	curl \
