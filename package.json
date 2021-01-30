@@ -1,6 +1,6 @@
 {
   "name": "alfred_hls_service",
-  "version": "4.2.44",
+  "version": "4.2.45",
   "description": "Alfred HLS Media Streaming Service",
   "license": "MIT",
   "main": "lib/server/server.js",
