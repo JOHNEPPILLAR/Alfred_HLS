@@ -1,4 +1,4 @@
-FROM node:15-alpine AS builder
+FROM node:16-alpine AS builder
 
 ## Install build toolchain
 RUN mkdir -p /home/nodejs/app \
@@ -21,7 +21,7 @@ COPY package*.json ./
 RUN npm install
 
 ## Setup clean small container
-FROM node:15-alpine AS app
+FROM node:16-alpine AS app
 
 ENV TZ=Europe/London
 
